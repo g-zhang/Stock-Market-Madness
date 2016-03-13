@@ -99,10 +99,12 @@ public class Player : MonoBehaviour {
     void BuyShares(CompanyName company)
     {
         print("Bought " + company);
+		CompanyShares [(int)company]++;
     }
 
     void SellShares(CompanyName company)
     {
         print("Sell " + company);
+		CompanyShares [(int)company]--;
     }
 }
