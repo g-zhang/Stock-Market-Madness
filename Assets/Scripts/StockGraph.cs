@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class StockGraph : MonoBehaviour {
 
 	public List<float> visiblePriceHistory;
-	public List<float> priceHistory;
+	public List<List<float>> priceHistoryByPeriod;
 	public Vector2 margins;
 	public float lineHeight;
 	public float maxPriceOnGraph;
@@ -31,6 +31,8 @@ public class StockGraph : MonoBehaviour {
 			Debug.LogError("trendObject must have a TextMesh. Exiting.");
 			Destroy(this); // stop running the script, keep the gameObject.
 		}
+
+		priceHistoryByPeriod = new List<List<float>>();
 	}
 
 	// Use this for initialization
@@ -44,8 +46,21 @@ public class StockGraph : MonoBehaviour {
 		maxPriceOnGraph = 100f;
 		maxDataPointsOnGraph = 50;
 		InvokeRepeating("AddWalkData", 0.0f, 0.1f);
+
+		AdvancePeriod();
 	}
 	
+	public void AddPrice(float price) {
+		int lastPeriodIdx = 0;
+		if (priceHistoryByPeriod.Count > 0)
+			lastPeriodIdx = priceHistoryByPeriod.Count - 1;
+		priceHistoryByPeriod[lastPeriodIdx].Add(price);
+	}
+
+	public void AdvancePeriod() {
+		priceHistoryByPeriod.Add(new List<float>());
+	}
+
 	// Update is called once per frame
 	void Update () {
 		setLinePoints();
@@ -58,12 +73,17 @@ public class StockGraph : MonoBehaviour {
 		float bottom = Mathf.Max(lastPrice - 10f, 1f);
 		float top = lastPrice + 10f;
 		if (Input.GetKey(KeyCode.D)) top = 0;
-		visiblePriceHistory.Add(Random.Range(bottom, top));
+		AddPrice(Random.Range(bottom, top));
+	}
+
+	void GetVisibleData() {
+		visiblePriceHistory = priceHistoryByPeriod[0];
 		while (visiblePriceHistory.Count > maxDataPointsOnGraph)
 			visiblePriceHistory.RemoveAt(0);
 	}
 
 	void setLinePoints() {
+		GetVisibleData();
 		if (visiblePriceHistory.Count < 2) return;
 		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
 		maxPriceOnGraph = 0;
