@@ -45,7 +45,7 @@ public class StockGraph : MonoBehaviour {
 		lineHeight = .1f;
 		maxPriceOnGraph = 100f;
 		maxDataPointsOnGraph = 50;
-		InvokeRepeating("AddWalkData", 0.0f, 0.1f);
+		// InvokeRepeating("AddWalkData", 0.0f, 0.1f);
 
 		AdvancePeriod();
 	}
