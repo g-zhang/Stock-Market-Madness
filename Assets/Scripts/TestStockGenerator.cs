@@ -8,6 +8,7 @@ public class TestStockGenerator : StockGenerator
 	{
 		float minVal = Mathf.Max(-10, 1 - prevValue);
 
-		return prevValue + Random.Range(minVal, 10f);
+		prevValue = prevValue + Random.Range(minVal, 10f);
+		return prevValue;
 	}
 }

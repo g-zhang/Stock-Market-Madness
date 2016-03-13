@@ -3,6 +3,8 @@
 public class StockManager : MonoBehaviour
 {
 	[Header("StockManager: Inspector Set Fields")]
+	public StockGraph graph;
+
 	public float roundTimeSeconds = 60f;
 	public int roundDataPoints = 120;
 
@@ -33,9 +35,18 @@ public class StockManager : MonoBehaviour
 		while (neededDataPoints > roundDataPointsAdded)
 		{
 			float nextStockPrice = stockGenerator.getNextStockValue();
-			print(nextStockPrice);
+			graph.AddPrice(nextStockPrice);
 
 			++roundDataPointsAdded;
+		}
+
+		// This is just a placeholder for now to keep the values moving.
+		if (roundElapsedTime >= roundTimeSeconds)
+		{
+			roundElapsedTime -= roundTimeSeconds;
+			roundDataPointsAdded = 0;
+
+			// graph.AdvancePeriod();
 		}
 
 		return;

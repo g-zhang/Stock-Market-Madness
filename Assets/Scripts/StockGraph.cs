@@ -45,16 +45,13 @@ public class StockGraph : MonoBehaviour {
 		lineHeight = .1f;
 		maxPriceOnGraph = 100f;
 		maxDataPointsOnGraph = 50;
-		InvokeRepeating("AddWalkData", 0.0f, 0.1f);
+		// InvokeRepeating("AddWalkData", 0.0f, 0.1f);
 
 		AdvancePeriod();
 	}
 	
 	public void AddPrice(float price) {
-		int lastPeriodIdx = 0;
-		if (priceHistoryByPeriod.Count > 0)
-			lastPeriodIdx = priceHistoryByPeriod.Count - 1;
-		priceHistoryByPeriod[lastPeriodIdx].Add(price);
+		priceHistoryByPeriod[priceHistoryByPeriod.Count - 1].Add(price);
 	}
 
 	public void AdvancePeriod() {
@@ -63,40 +60,55 @@ public class StockGraph : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown(KeyCode.A)) AdvancePeriod();
 		DrawGraph();
 	}
 
-	void GetVisibleData() {
-		visiblePriceHistory = priceHistoryByPeriod[0];
+	void UpdateVisibleData() {
+		visiblePriceHistory = new List<float>(priceHistoryByPeriod[priceHistoryByPeriod.Count - 1]);
+
 		while (visiblePriceHistory.Count > maxDataPointsOnGraph)
 			visiblePriceHistory.RemoveAt(0);
-	}
 
-	void DrawGraph() {
-		GetVisibleData();
-		if (visiblePriceHistory.Count < 2) return;
-		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
 		maxPriceOnGraph = 0;
 		for (int idx = 0; idx < visiblePriceHistory.Count; idx++)
 			if (maxPriceOnGraph < visiblePriceHistory[idx])
 				maxPriceOnGraph = visiblePriceHistory[idx];
-		if (maxPriceOnGraph <= 0) return;
-		maxPriceOnGraph += 10;
+	}
+
+	public float PeriodChange() {
+		List<float> periodData = priceHistoryByPeriod[priceHistoryByPeriod.Count - 1];
+		return periodData[periodData.Count - 1] - periodData[0];
+	}
+
+	void DrawGraph() {
+
+		UpdateVisibleData();
+		if (visiblePriceHistory.Count < 2) return;
+
+		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
 		for (int idx = 0; idx < visiblePriceHistory.Count; idx++) {
 			newLinePoints[idx] = linePoint(idx);
 		}
+		
 		lineRenderer.SetVertexCount(newLinePoints.Length);
 		lineRenderer.SetPositions(newLinePoints);
+
 		if (newLinePoints.Length != 0)
 			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1], Time.deltaTime*4f);
-	}
 
+		float delta = PeriodChange();
+		trendText.text = delta.ToString();
+		trendText.color = (delta >= 0) ? Color.green : Color.red;
+
+	}
+	
 	public Vector3 linePoint(int day) {
 		float price = visiblePriceHistory[day];
 		Vector3 point = new Vector3();
 		point.z = -lineHeight;
 		point.x = day * (transform.localScale.x - 2 * margins.x) / (visiblePriceHistory.Count - 1);
-		point.y = price * (transform.localScale.y - 2 * margins.y) / maxPriceOnGraph;
+		point.y = price * (transform.localScale.y - 2 * margins.y) / (maxPriceOnGraph+10f);
 		point += graphOrigin + transform.position;
 		return point;
 	}
