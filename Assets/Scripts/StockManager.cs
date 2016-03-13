@@ -35,7 +35,7 @@ public class StockManager : MonoBehaviour
 		while (neededDataPoints > roundDataPointsAdded)
 		{
 			float nextStockPrice = stockGenerator.getNextStockValue();
-			graph.AddPrice(nextStockPrice);
+			graph.Price = nextStockPrice;
 
 			++roundDataPointsAdded;
 		}

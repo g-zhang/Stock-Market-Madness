@@ -49,10 +49,6 @@ public class StockGraph : MonoBehaviour {
 
 		AdvancePeriod();
 	}
-	
-	public void AddPrice(float price) {
-		priceHistoryByPeriod[priceHistoryByPeriod.Count - 1].Add(price);
-	}
 
 	public void AdvancePeriod() {
 		priceHistoryByPeriod.Add(new List<float>());
@@ -76,9 +72,17 @@ public class StockGraph : MonoBehaviour {
 				maxPriceOnGraph = visiblePriceHistory[idx];
 	}
 
-	public float PeriodChange() {
-		List<float> periodData = priceHistoryByPeriod[priceHistoryByPeriod.Count - 1];
-		return periodData[periodData.Count - 1] - periodData[0];
+	public float PeriodDelta {
+		get { return Price - ThisPeriodData[0]; }
+	}
+
+	public List<float> ThisPeriodData {
+		get { return priceHistoryByPeriod[priceHistoryByPeriod.Count - 1]; }
+	}
+
+	public float Price {
+		get { return ThisPeriodData[ThisPeriodData.Count - 1]; }
+		set { ThisPeriodData.Add(value); }
 	}
 
 	void DrawGraph() {
@@ -96,10 +100,9 @@ public class StockGraph : MonoBehaviour {
 
 		if (newLinePoints.Length != 0)
 			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1], Time.deltaTime*4f);
-
-		float delta = PeriodChange();
-		trendText.text = delta.ToString();
-		trendText.color = (delta >= 0) ? Color.green : Color.red;
+		
+		trendText.text = PeriodDelta.ToString();
+		trendText.color = (PeriodDelta >= 0) ? Color.green : Color.red;
 
 	}
 	
@@ -120,6 +123,6 @@ public class StockGraph : MonoBehaviour {
 		float bottom = Mathf.Max(lastPrice - 10f, 1f);
 		float top = lastPrice + 10f;
 		if (Input.GetKey(KeyCode.D)) top = 0;
-		AddPrice(Random.Range(bottom, top));
+		Price = Random.Range(bottom, top);
 	}
 }
