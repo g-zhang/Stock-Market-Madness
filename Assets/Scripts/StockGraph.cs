@@ -63,17 +63,7 @@ public class StockGraph : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		setLinePoints();
-	}
-
-	void AddWalkData() {
-		float lastPrice = 50f;
-		if (visiblePriceHistory.Count != 0)
-			lastPrice = visiblePriceHistory[visiblePriceHistory.Count - 1];
-		float bottom = Mathf.Max(lastPrice - 10f, 1f);
-		float top = lastPrice + 10f;
-		if (Input.GetKey(KeyCode.D)) top = 0;
-		AddPrice(Random.Range(bottom, top));
+		DrawGraph();
 	}
 
 	void GetVisibleData() {
@@ -82,7 +72,7 @@ public class StockGraph : MonoBehaviour {
 			visiblePriceHistory.RemoveAt(0);
 	}
 
-	void setLinePoints() {
+	void DrawGraph() {
 		GetVisibleData();
 		if (visiblePriceHistory.Count < 2) return;
 		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
@@ -109,5 +99,15 @@ public class StockGraph : MonoBehaviour {
 		point.y = price * (transform.localScale.y - 2 * margins.y) / maxPriceOnGraph;
 		point += graphOrigin + transform.position;
 		return point;
+	}
+	
+	void AddWalkData() {
+		float lastPrice = 50f;
+		if (visiblePriceHistory.Count != 0)
+			lastPrice = visiblePriceHistory[visiblePriceHistory.Count - 1];
+		float bottom = Mathf.Max(lastPrice - 10f, 1f);
+		float top = lastPrice + 10f;
+		if (Input.GetKey(KeyCode.D)) top = 0;
+		AddPrice(Random.Range(bottom, top));
 	}
 }
