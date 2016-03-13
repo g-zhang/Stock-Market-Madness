@@ -6,7 +6,7 @@ public class StockManager : MonoBehaviour
 	public float roundTimeSeconds = 60f;
 	public int roundDataPoints = 120;
 
-	public StockGenerator stockGenerator;
+	public StockGenerator stockGenerator = new TestStockGenerator();
 
 	[Header("StockManager: Dynamically Set Fields")]
 	public float roundElapsedTime;
@@ -34,6 +34,8 @@ public class StockManager : MonoBehaviour
 		{
 			float nextStockPrice = stockGenerator.getNextStockValue();
 			print(nextStockPrice);
+
+			++roundDataPointsAdded;
 		}
 
 		return;
