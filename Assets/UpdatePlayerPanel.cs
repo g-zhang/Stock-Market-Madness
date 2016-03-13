@@ -17,24 +17,8 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	}
 
 	void updateMoney(float newValue) {
-		string finalValue = "$ ";
-		int dollarValue = Mathf.FloorToInt (newValue);
-		int centValue = Mathf.FloorToInt ((newValue - dollarValue) * 100);
-		string dollar = dollarValue.ToString ();
-
-		for (int i = dollar.Length - 3; i > 0; i -= 3) {
-			dollar = dollar.Insert (i, ",");
-		}
-
-		string cent = "0";
-		if (centValue < 10) {
-			cent += centValue.ToString ();
-		} else {
-			cent = centValue.ToString ();
-		}
-
-		finalValue += dollar + "." + cent;
-
+		string finalValue = string.Format ("{0:C}", newValue);
+		finalValue = finalValue.Insert (1, " ");
 		CurrentMoney.text = finalValue;
 	}
 
