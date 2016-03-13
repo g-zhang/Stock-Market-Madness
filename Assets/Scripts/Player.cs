@@ -9,16 +9,20 @@ public class Player : MonoBehaviour {
     [Header("Status")]
     public float currentMoney;
     public int[] CompanyShares = new int[(int)CompanyName.size];
+    public bool holdState = false;
+    public float currDelayTime = 0f;
+    public float currHoldTime = 0f;
 
     [Header("Config")]
-    public float delayActionTime = .5f;
-    public float holdActionRate = 4f;
-    float currDelayTime = 0f;
+    public float delayActionTime = .5f; //time to hold the button before it starts auto buying/selling
+    public float holdActionRate = 4f; //rate of auto buying/selling
+
+    
 
 
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
@@ -59,6 +63,35 @@ public class Player : MonoBehaviour {
             {
                 SellShares(selectedCompany);
             }
+
+            //hold button down logic
+            if(input.Action1 || input.Action2)
+            {
+                currDelayTime += Time.deltaTime;
+            }
+
+            if(currDelayTime >= delayActionTime)
+            {
+                currHoldTime += Time.deltaTime;
+                if(currHoldTime >= 1f / holdActionRate)
+                {
+                    currHoldTime = 0f;
+                    if(input.Action1)
+                    {
+                        BuyShares(selectedCompany);
+                    }
+                    if(input.Action2)
+                    {
+                        SellShares(selectedCompany);
+                    }
+                }
+            }
+        }
+
+        if(currDelayTime != 0 && !(input.Action1 || input.Action2))
+        {
+            currDelayTime = 0f;
+            currHoldTime = 0f;
         }
     }
 
