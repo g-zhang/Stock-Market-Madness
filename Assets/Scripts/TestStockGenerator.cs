@@ -48,13 +48,17 @@ public class TestStockGenerator : StockGenerator
 			return false;
 		}
 
+		currNumBought += numStocks;
 		numStocksAvailable -= numStocks;
+
 		return true;
 	}
 
 	public override void RecordSell(int numStocks)
 	{
+		currNumSold += numStocks;
 		numStocksAvailable += numStocks;
+
 		return;
 	}
 }
