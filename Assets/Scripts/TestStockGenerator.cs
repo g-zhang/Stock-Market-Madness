@@ -8,6 +8,9 @@ public class TestStockGenerator : StockGenerator
 	public float negDiffWeight = 0.01f;
 	public float posDiffWeight = 0.01f;
 
+	public float buyValLerpWeight = 0.5f;
+	public float sellValLerpWeight = 0.5f;
+
 	[Header("TestStockGenerator: Dynamically Set Fields")]
 	public int currNumSold;
 	public int currNumBought;
@@ -26,14 +29,14 @@ public class TestStockGenerator : StockGenerator
 		int difference = currNumBought - currNumSold;
 		if (difference < 0)
 		{
-			minVal -= negDiffWeight * difference;
+			minVal += negDiffWeight * difference;
 		}
 		else if (difference > 0)
 		{
 			maxVal += posDiffWeight * difference;
 		}
-		currNumBought = 0;
-		currNumSold = 0;
+		currNumBought = Mathf.FloorToInt(Mathf.Lerp(0f, currNumBought, buyValLerpWeight));
+		currNumSold = Mathf.FloorToInt(Mathf.Lerp(0f, currNumSold, sellValLerpWeight));
 
 		minVal = Mathf.Max(minVal, 1 - prevValue);
 
