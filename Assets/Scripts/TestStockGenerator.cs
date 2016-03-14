@@ -26,6 +26,7 @@ public class TestStockGenerator : StockGenerator
 
 	public override void RecordSell(int numStocks)
 	{
+		numStocksAvailable += numStocks;
 		return;
 	}
 }
