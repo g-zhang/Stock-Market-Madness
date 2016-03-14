@@ -13,12 +13,12 @@ public class Player : MonoBehaviour {
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
     public CompanyName selectedCompany = CompanyName.none;
+    private CompanyName prevCompany = CompanyName.none;
 
     [Header("Config")]
     public float delayActionTime = .5f; //time to hold the button before it starts auto buying/selling
     public float holdActionRate = 4f; //rate of auto buying/selling
-
-    
+    public int sharesPerAction = 1; //number of shares bought per button press
 
 
 	// Use this for initialization
@@ -40,19 +40,18 @@ public class Player : MonoBehaviour {
 
     void ControlsUpdate(InputDevice input)
     {
+        prevCompany = selectedCompany;
         selectedCompany = CompanyName.none;
 
-
-
-        if(input.DPadLeft)
+        if(input.DPadLeft || input.LeftStick.Left)
         {
             selectedCompany = CompanyName.A;
         }
-        if(input.DPadDown)
+        if(input.DPadDown || input.LeftStick.Down)
         {
             selectedCompany = CompanyName.B;
         }
-        if(input.DPadRight)
+        if(input.DPadRight || input.LeftStick.Right)
         {
             selectedCompany = CompanyName.C;
         }
@@ -92,7 +91,8 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(currDelayTime != 0 && !(input.Action1 || input.Action2) || input.DPad.HasChanged)
+        if(currDelayTime != 0 && !(input.Action1 || input.Action2) ||
+                           input.DPad.HasChanged || prevCompany != selectedCompany)
         {
             currDelayTime = 0f;
             currHoldTime = 0f;
@@ -103,12 +103,12 @@ public class Player : MonoBehaviour {
     void BuyShares(CompanyName company)
     {
         print("Bought " + company);
-		CompanyShares [(int)company]++;
+		CompanyShares [(int)company] += sharesPerAction;
     }
 
     void SellShares(CompanyName company)
     {
         print("Sell " + company);
-		CompanyShares [(int)company]--;
+		CompanyShares [(int)company] -= sharesPerAction;
     }
 }
