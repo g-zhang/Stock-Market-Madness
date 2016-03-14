@@ -8,13 +8,23 @@ public class StockManager : MonoBehaviour
 	public float roundTimeSeconds = 60f;
 	public int roundDataPoints = 120;
 
-	public StockGenerator stockGenerator = new TestStockGenerator();
-
 	[Header("StockManager: Dynamically Set Fields")]
 	public float roundElapsedTime;
 
 	public float timeBetweenDataPoints;
 	public int roundDataPointsAdded;
+
+	public StockGenerator stockGenerator;
+
+	public int StocksAvailable
+	{
+		get { return stockGenerator.numStocksAvailable; }
+	}
+
+	public float Price
+	{
+		get { return graph.Price; }
+	}
 
 	void Awake()
 	{
@@ -22,6 +32,8 @@ public class StockManager : MonoBehaviour
 
 		timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
 		roundDataPointsAdded = 0;
+
+		stockGenerator = GetComponent<StockGenerator>();
 
 		return;
 	}
@@ -52,10 +64,9 @@ public class StockManager : MonoBehaviour
 		return;
 	}
 
-	public void RecordBuy(int numStocks)
+	public bool RecordBuy(int numStocks)
 	{
-		stockGenerator.RecordBuy(numStocks);
-		return;
+		return stockGenerator.RecordBuy(numStocks);
 	}
 
 	public void RecordSell(int numStocks)
