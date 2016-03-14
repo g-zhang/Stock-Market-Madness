@@ -18,8 +18,7 @@ public class Player : MonoBehaviour {
     [Header("Config")]
     public float delayActionTime = .5f; //time to hold the button before it starts auto buying/selling
     public float holdActionRate = 4f; //rate of auto buying/selling
-
-    
+    public int sharesPerAction = 1; //number of shares bought per button press
 
 
 	// Use this for initialization
@@ -104,12 +103,12 @@ public class Player : MonoBehaviour {
     void BuyShares(CompanyName company)
     {
         print("Bought " + company);
-		CompanyShares [(int)company]++;
+		CompanyShares [(int)company] += sharesPerAction;
     }
 
     void SellShares(CompanyName company)
     {
         print("Sell " + company);
-		CompanyShares [(int)company]--;
+		CompanyShares [(int)company] -= sharesPerAction;
     }
 }
