@@ -51,4 +51,16 @@ public class StockManager : MonoBehaviour
 
 		return;
 	}
+
+	public void RecordBuy(int numStocks)
+	{
+		stockGenerator.RecordBuy(numStocks);
+		return;
+	}
+
+	public void RecordSell(int numStocks)
+	{
+		stockGenerator.RecordSell(numStocks);
+		return;
+	}
 }
