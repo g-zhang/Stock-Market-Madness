@@ -11,4 +11,14 @@ public class TestStockGenerator : StockGenerator
 		prevValue = prevValue + Random.Range(minVal, 10f);
 		return prevValue;
 	}
+
+	public void RecordBuy(int numStocks)
+	{
+		return;
+	}
+
+	public void RecordSell(int numStocks)
+	{
+		return;
+	}
 }
