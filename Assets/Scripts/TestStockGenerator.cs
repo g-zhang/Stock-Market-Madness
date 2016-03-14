@@ -3,7 +3,6 @@
 public class TestStockGenerator : StockGenerator
 {
 	public float prevValue = 50f;
-	public int numStocksAvailable = 1000000;
 
 	public override float getNextStockValue()
 	{

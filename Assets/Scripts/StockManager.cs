@@ -16,6 +16,16 @@ public class StockManager : MonoBehaviour
 
 	public StockGenerator stockGenerator;
 
+	public int StocksAvailable
+	{
+		get { return stockGenerator.numStocksAvailable; }
+	}
+
+	public float Price
+	{
+		get { return graph.Price; }
+	}
+
 	void Awake()
 	{
 		roundElapsedTime = 0f;
