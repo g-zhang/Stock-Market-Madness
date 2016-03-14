@@ -61,6 +61,7 @@ public class StockGraph : MonoBehaviour {
 	}
 
 	void UpdateVisibleData() {
+
 		visiblePriceHistory = new List<float>(priceHistoryByPeriod[priceHistoryByPeriod.Count - 1]);
 
 		while (visiblePriceHistory.Count > maxDataPointsOnGraph)
@@ -101,7 +102,7 @@ public class StockGraph : MonoBehaviour {
 		if (newLinePoints.Length != 0)
 			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1], Time.deltaTime*4f);
 		
-		trendText.text = PeriodDelta.ToString();
+		trendText.text = ((PeriodDelta >= 0) ? "+" : "") + PeriodDelta.ToString("0.00");
 		trendText.color = (PeriodDelta >= 0) ? Color.green : Color.red;
 
 	}
