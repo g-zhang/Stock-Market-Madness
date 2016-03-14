@@ -2,9 +2,10 @@
 
 public class TestStockGenerator : StockGenerator
 {
-	private float prevValue = 50f;
+	public float prevValue = 50f;
+	public int numStocksAvailable = 1000000;
 
-	public float getNextStockValue()
+	public override float getNextStockValue()
 	{
 		float minVal = Mathf.Max(-10, 1 - prevValue);
 
@@ -12,12 +13,18 @@ public class TestStockGenerator : StockGenerator
 		return prevValue;
 	}
 
-	public void RecordBuy(int numStocks)
+	public override bool RecordBuy(int numStocks)
 	{
-		return;
+		if (numStocks > numStocksAvailable)
+		{
+			return false;
+		}
+
+		numStocksAvailable -= numStocks;
+		return true;
 	}
 
-	public void RecordSell(int numStocks)
+	public override void RecordSell(int numStocks)
 	{
 		return;
 	}

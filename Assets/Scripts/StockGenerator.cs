@@ -1,6 +1,8 @@
-﻿public interface StockGenerator
+﻿using UnityEngine;
+
+abstract public class StockGenerator : MonoBehaviour
 {
-	float getNextStockValue();
-	void RecordBuy(int numStocks);
-	void RecordSell(int numStocks);
+	abstract public float getNextStockValue();
+	abstract public bool RecordBuy(int numStocks);
+	abstract public void RecordSell(int numStocks);
 }
