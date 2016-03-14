@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     public bool holdState = false;
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
+    public CompanyName selectedCompany = CompanyName.none;
 
     [Header("Config")]
     public float delayActionTime = .5f; //time to hold the button before it starts auto buying/selling
@@ -39,7 +40,10 @@ public class Player : MonoBehaviour {
 
     void ControlsUpdate(InputDevice input)
     {
-        CompanyName selectedCompany = CompanyName.none;
+        selectedCompany = CompanyName.none;
+
+
+
         if(input.DPadLeft)
         {
             selectedCompany = CompanyName.A;
@@ -88,7 +92,7 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(currDelayTime != 0 && !(input.Action1 || input.Action2))
+        if(currDelayTime != 0 && !(input.Action1 || input.Action2) || input.DPad.HasChanged)
         {
             currDelayTime = 0f;
             currHoldTime = 0f;
