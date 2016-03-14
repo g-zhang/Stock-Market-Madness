@@ -26,7 +26,7 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	}
 
 	void updateShare(CompanyName whichCom, int newValue) {
-		string finalValue = newValue.ToString () + "k";
+		string finalValue = (newValue/1000).ToString () + "k";
 		CompanyShares [(int)whichCom].text = finalValue;
 	}
 
