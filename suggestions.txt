@@ -1,0 +1,14 @@
+put stocks on same graph
+player actions are ambiguous, like "hire risky rocket tas your CEO? Y/N" "evade taxes?" "pay dividends?"
+bull and bear mascots
+sound effects "SELL B!!! SELLLLLLLL!" and bells, bulls, bears, and air horns
+particles to show who's buying and selling what, moving between $ counts and the graphs.
+	adds reaction / button mash skills
+shake graphs when bad things happen
+more colorful - tints
+Hints about what may happen to the stock, given actions taken
+fewer numbers, or more out-of-the-way. make it more graphical / symbolic language
+make the control panel on screen look more naturally mapped to the controllers
+add multiple control modes we can switch between.
+
+Hot swap playtest abilities.
