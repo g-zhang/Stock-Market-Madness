@@ -16,6 +16,16 @@ public class StockManager : MonoBehaviour
 
 	public StockGenerator stockGenerator;
 
+	public int StocksAvailable
+	{
+		get { return stockGenerator.numStocksAvailable; }
+	}
+
+	public float Price
+	{
+		get { return graph.Price; }
+	}
+
 	void Awake()
 	{
 		roundElapsedTime = 0f;
@@ -25,6 +35,12 @@ public class StockManager : MonoBehaviour
 
 		stockGenerator = GetComponent<StockGenerator>();
 
+		return;
+	}
+
+	void Start()
+	{
+		graph.Price = stockGenerator.getNextStockValue();
 		return;
 	}
 
@@ -48,7 +64,7 @@ public class StockManager : MonoBehaviour
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
 
-			// graph.AdvancePeriod();
+			graph.AdvancePeriod();
 		}
 
 		return;
