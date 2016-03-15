@@ -8,7 +8,16 @@ public class UpdatePlayerPanel : MonoBehaviour {
 
 	[Header("Text Objects")]
 	public Text CurrentMoney;
+	public Text MoneyDiff;
 	public Text[] CompanyShares;
+
+	float lastMoney;
+	float MoneyDiffValue;
+
+	void Start() {
+		lastMoney = GetComponent<Player> ().currentMoney;
+		MoneyDiffValue = 0;
+	}
 
 	void Update () {
 		updateSelectedCom (GetComponent<Player> ().selectedCompany);
@@ -31,7 +40,6 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	}
 
 	void updateSelectedCom(CompanyName whichCom) {
-
 		if (whichCom == CompanyName.none) {
 			highlight.enabled = false;
 		} 
