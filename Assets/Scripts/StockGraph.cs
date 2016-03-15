@@ -103,7 +103,7 @@ public class StockGraph : MonoBehaviour {
 	}
 
 	public void DrawDeadlines(int idx1, int idx2) {
-		print(idx1); print(idx2);
+		//print(idx1); print(idx2);
 		deadLineOne.SetPositions(
 			new Vector3[2] {
 				PriceDataToWorldPoint(idx1, 0),
