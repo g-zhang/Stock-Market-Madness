@@ -16,6 +16,7 @@ public class StockGraph : MonoBehaviour {
 	public Vector3 graphOrigin;
 	public GameObject StockManagerObject;
 	private StockManager stockManager;
+	private Vector3 trendTextOffset;
 
 	private LineRenderer deadLineOne, deadLineTwo;
 
@@ -56,14 +57,17 @@ public class StockGraph : MonoBehaviour {
 	}
 	
 	void Start () {
+		margins = new Vector2(0.5f, 0.5f);
+		lineHeight = .1f;
+
 		graphOrigin.z = -lineHeight;
 		graphOrigin.x = -(transform.localScale.x / 2 - margins.x);
 		graphOrigin.y = -(transform.localScale.y / 2 - margins.y);
 
-		margins = new Vector2(0, 0);
-		lineHeight = .1f;
 		maxPriceOnGraph = 100f;
 		maxDataPointsOnGraph = stockManager.roundDataPoints * 2;
+
+		trendTextOffset = new Vector3(0.7f, 0, 0);
 
 		AdvancePeriod();
 	}
@@ -138,29 +142,27 @@ public class StockGraph : MonoBehaviour {
 	void DrawGraph() {
 
 		UpdateVisibleData();
-		if (visiblePriceHistory.Count < 2) return;
+		//if (visiblePriceHistory.Count < 2) return;
 
 		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
 		for (int idx = 0; idx < visiblePriceHistory.Count; idx++)
-			newLinePoints[idx] = PriceDataToWorldPoint(idx, visiblePriceHistory[idx]);
+			newLinePoints[idx] = PriceDataToWorldPoint(idx + maxDataPointsOnGraph - visiblePriceHistory.Count, visiblePriceHistory[idx]);
 		lineRenderer.SetVertexCount(newLinePoints.Length);
 		lineRenderer.SetPositions(newLinePoints);
 
 		if (newLinePoints.Length != 0)
-			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1], Time.deltaTime*4f);
+			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1] + trendTextOffset, Time.deltaTime*4f);
 		trendText.text = ((PeriodDelta >= 0) ? "+" : "") + PeriodDelta.ToString("0.00");
 		trendText.color = (PeriodDelta >= 0) ? Color.green : Color.red;
 
 	}
 	
 	public Vector3 PriceDataToWorldPoint(int idx, float price) {
-		Vector3 point = new Vector3();
-		point.z = -lineHeight;
-		float maxX = transform.localScale.x - margins.x;
-		point.x = idx * maxX / maxDataPointsOnGraph;
-		point.y = price * (transform.localScale.y - 2 * margins.y) / (maxPriceOnGraph+10f);
-		point += graphOrigin + transform.position;
-		return point;
+		float maxX = transform.localScale.x - 2 * margins.x;
+		float maxY = transform.localScale.y - 2 * margins.y;
+		float x = idx * maxX / maxDataPointsOnGraph;
+		float y = price * maxY / maxPriceOnGraph;
+		return new Vector3(x,y,0) + graphOrigin + transform.position;
 	}
 
 }
