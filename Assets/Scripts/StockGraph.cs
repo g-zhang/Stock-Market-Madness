@@ -14,28 +14,47 @@ public class StockGraph : MonoBehaviour {
 	public GameObject trendObject;
 	private TextMesh trendText;
 	public Vector3 graphOrigin;
+	public GameObject StockManagerObject;
+	private StockManager stockManager;
+
+	private LineRenderer deadLineOne, deadLineTwo;
 
 	void Awake() {
+
 		lineRenderer = GetComponent<LineRenderer>();
-		if (lineRenderer == null) {
-			Debug.LogError("LineRenderer component not found on this object. Exiting.");
-			Destroy(this); // stop running the script, keep the gameObject.
-		}
+		nullCheck(lineRenderer, "LineRenderer component not found on this object. Exiting.");
 		lineRenderer.useWorldSpace = true;
-		if (trendObject == null) {
-			Debug.LogError("trendObject must be set in inspector. Exiting.");
-			Destroy(this); // stop running the script, keep the gameObject.
-		}
+
+		nullCheck(trendObject, "trendObject must be set in inspector. Exiting.");
 		trendText = trendObject.GetComponent<TextMesh>();
-		if (trendText == null) {
-			Debug.LogError("trendObject must have a TextMesh. Exiting.");
-			Destroy(this); // stop running the script, keep the gameObject.
-		}
+		nullCheck(trendText, "trendObject must have a TextMesh. Exiting.");
+
+		nullCheck(StockManagerObject,"StockManagerObject must be set in inspector. Exiting.");
+		stockManager = StockManagerObject.GetComponent<StockManager>();
+		nullCheck(stockManager, "stockManagerObject must have a StockManager. Exiting.");
+
+		Transform DL1trans = transform.Find("DeadLine1");
+		nullCheck(DL1trans, "Deadline1 not found as a child of StockGraph. Exiting.");
+		GameObject DL1obj = DL1trans.gameObject;
+		deadLineOne = DL1obj.GetComponent<LineRenderer>();
+		nullCheck(deadLineOne, "Deadline1 object must have a LineRenderer component. Exiting.");
+
+		Transform DL2trans = transform.Find("DeadLine2");
+		nullCheck(DL2trans, "Deadline2 not found as a child of StockGraph. Exiting.");
+		GameObject DL2obj = DL2trans.gameObject;
+		deadLineTwo = DL2obj.GetComponent<LineRenderer>();
+		nullCheck(deadLineTwo, "Deadline2 object must have a LineRenderer component. Exiting.");
 
 		priceHistoryByPeriod = new List<List<float>>();
 	}
 
-	// Use this for initialization
+	void nullCheck(Object obj, string msg) {
+		if (obj == null) {
+			Debug.LogError(msg);
+			Destroy(this);
+		}
+	}
+	
 	void Start () {
 		graphOrigin.z = -lineHeight;
 		graphOrigin.x = -(transform.localScale.x / 2 - margins.x);
@@ -44,8 +63,7 @@ public class StockGraph : MonoBehaviour {
 		margins = new Vector2(0, 0);
 		lineHeight = .1f;
 		maxPriceOnGraph = 100f;
-		maxDataPointsOnGraph = 50;
-		// InvokeRepeating("AddWalkData", 0.0f, 0.1f);
+		maxDataPointsOnGraph = stockManager.roundDataPoints * 2;
 
 		AdvancePeriod();
 	}
@@ -53,8 +71,7 @@ public class StockGraph : MonoBehaviour {
 	public void AdvancePeriod() {
 		priceHistoryByPeriod.Add(new List<float>());
 	}
-
-	// Update is called once per frame
+	
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.A)) AdvancePeriod();
 		DrawGraph();
@@ -62,15 +79,39 @@ public class StockGraph : MonoBehaviour {
 
 	void UpdateVisibleData() {
 
-		visiblePriceHistory = new List<float>(priceHistoryByPeriod[priceHistoryByPeriod.Count - 1]);
+		maxDataPointsOnGraph = stockManager.roundDataPoints * 2;
+
+		visiblePriceHistory = new List<float>();
+		visiblePriceHistory.AddRange(PeriodsAgoData(2));
+		visiblePriceHistory.AddRange(PeriodsAgoData(1));
+		visiblePriceHistory.AddRange(ThisPeriodData);
 
 		while (visiblePriceHistory.Count > maxDataPointsOnGraph)
 			visiblePriceHistory.RemoveAt(0);
 
 		maxPriceOnGraph = 0;
-		for (int idx = 0; idx < visiblePriceHistory.Count; idx++)
-			if (maxPriceOnGraph < visiblePriceHistory[idx])
-				maxPriceOnGraph = visiblePriceHistory[idx];
+		foreach (float price in visiblePriceHistory)
+			maxPriceOnGraph = Mathf.Max(maxPriceOnGraph, price);
+
+		if (visiblePriceHistory.Count <= 0) return;
+		DrawDeadlines(maxDataPointsOnGraph - ThisPeriodData.Count, maxDataPointsOnGraph - ThisPeriodData.Count - stockManager.roundDataPoints);
+
+	}
+
+	public void DrawDeadlines(int idx1, int idx2) {
+		print(idx1); print(idx2);
+		deadLineOne.SetPositions(
+			new Vector3[2] {
+				PriceDataToWorldPoint(idx1, 0),
+				PriceDataToWorldPoint(idx1, maxPriceOnGraph)
+			}
+		);
+		deadLineTwo.SetPositions(
+			new Vector3[2] {
+				PriceDataToWorldPoint(idx2, 0),
+				PriceDataToWorldPoint(idx2, maxPriceOnGraph)
+			}
+		);
 	}
 
 	public float PeriodDelta {
@@ -78,11 +119,19 @@ public class StockGraph : MonoBehaviour {
 	}
 
 	public List<float> ThisPeriodData {
-		get { return priceHistoryByPeriod[priceHistoryByPeriod.Count - 1]; }
+		get { return PeriodsAgoData(0); }
+	}
+
+	public List<float> PeriodsAgoData(int periodsAgo) {
+		int periodIdx = priceHistoryByPeriod.Count - periodsAgo - 1;
+		return (periodIdx < 0) ? new List<float>() : priceHistoryByPeriod[periodIdx];
 	}
 
 	public float Price {
-		get { return ThisPeriodData[ThisPeriodData.Count - 1]; }
+		get {
+			if (ThisPeriodData.Count == 0) return Mathf.Infinity;
+			return ThisPeriodData[ThisPeriodData.Count - 1];
+		}
 		set { ThisPeriodData.Add(value); }
 	}
 
@@ -92,38 +141,26 @@ public class StockGraph : MonoBehaviour {
 		if (visiblePriceHistory.Count < 2) return;
 
 		Vector3[] newLinePoints = new Vector3[visiblePriceHistory.Count];
-		for (int idx = 0; idx < visiblePriceHistory.Count; idx++) {
-			newLinePoints[idx] = linePoint(idx);
-		}
-		
+		for (int idx = 0; idx < visiblePriceHistory.Count; idx++)
+			newLinePoints[idx] = PriceDataToWorldPoint(idx, visiblePriceHistory[idx]);
 		lineRenderer.SetVertexCount(newLinePoints.Length);
 		lineRenderer.SetPositions(newLinePoints);
 
 		if (newLinePoints.Length != 0)
 			trendObject.transform.position = Vector3.Lerp(trendObject.transform.position, newLinePoints[newLinePoints.Length-1], Time.deltaTime*4f);
-		
 		trendText.text = ((PeriodDelta >= 0) ? "+" : "") + PeriodDelta.ToString("0.00");
 		trendText.color = (PeriodDelta >= 0) ? Color.green : Color.red;
 
 	}
 	
-	public Vector3 linePoint(int day) {
-		float price = visiblePriceHistory[day];
+	public Vector3 PriceDataToWorldPoint(int idx, float price) {
 		Vector3 point = new Vector3();
 		point.z = -lineHeight;
-		point.x = day * (transform.localScale.x - 2 * margins.x) / (visiblePriceHistory.Count - 1);
+		float maxX = transform.localScale.x - margins.x;
+		point.x = idx * maxX / maxDataPointsOnGraph;
 		point.y = price * (transform.localScale.y - 2 * margins.y) / (maxPriceOnGraph+10f);
 		point += graphOrigin + transform.position;
 		return point;
 	}
-	
-	void AddWalkData() {
-		float lastPrice = 50f;
-		if (visiblePriceHistory.Count != 0)
-			lastPrice = visiblePriceHistory[visiblePriceHistory.Count - 1];
-		float bottom = Mathf.Max(lastPrice - 10f, 1f);
-		float top = lastPrice + 10f;
-		if (Input.GetKey(KeyCode.D)) top = 0;
-		Price = Random.Range(bottom, top);
-	}
+
 }
