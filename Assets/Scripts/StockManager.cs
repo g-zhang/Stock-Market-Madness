@@ -64,7 +64,7 @@ public class StockManager : MonoBehaviour
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
 
-			// graph.AdvancePeriod();
+			graph.AdvancePeriod();
 		}
 
 		return;
