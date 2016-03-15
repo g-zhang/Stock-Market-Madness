@@ -9,7 +9,7 @@ public class CompanyManager : MonoBehaviour {
     public static CompanyManager S;
 
     public GameObject[] stockObjects = new GameObject[(int)CompanyName.size];
-    List<StockManager> companyStocks = new List<StockManager>();
+    StockManager[] companyStocks = new StockManager[(int)CompanyName.size];
 
     [Header("Status")]
     public float[] currentPrices = new float[(int)CompanyName.size];
@@ -17,27 +17,34 @@ public class CompanyManager : MonoBehaviour {
     void Awake()
     {
         S = this;
-    }
 
-    // Use this for initialization
-    void Start () {
-        for(CompanyName cname = CompanyName.A; cname < CompanyName.size; cname++)
+        for (CompanyName cname = CompanyName.A; cname < CompanyName.size; cname++)
         {
             StockManager cstock = stockObjects[(int)cname].GetComponentInChildren<StockManager>();
-            if(cstock != null)
+            if (cstock != null)
             {
-                companyStocks.Add(cstock);
-            } else
+                companyStocks[(int)cname] = cstock;
+            }
+            else
             {
                 Debug.LogError("All stock objects must have a StockManager component script!");
                 Destroy(this);
             }
         }
+    }
+
+    // Use this for initialization
+    void Start () {
+  
 	}
 
     public StockManager GetStocks(CompanyName name)
     {
-        return companyStocks[(int)name];
+        if(name < CompanyName.size && name >= CompanyName.A)
+        {
+            return companyStocks[(int)name];
+        }
+        return null;
     }
 	
 	// Update is called once per frame
