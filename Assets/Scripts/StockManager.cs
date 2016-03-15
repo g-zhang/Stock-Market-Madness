@@ -38,6 +38,12 @@ public class StockManager : MonoBehaviour
 		return;
 	}
 
+	void Start()
+	{
+		graph.Price = stockGenerator.getNextStockValue();
+		return;
+	}
+
 	void Update()
 	{
 		roundElapsedTime += Time.deltaTime;
