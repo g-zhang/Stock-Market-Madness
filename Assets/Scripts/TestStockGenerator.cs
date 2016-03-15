@@ -11,6 +11,9 @@ public class TestStockGenerator : StockGenerator
 	public float buyValLerpWeight = 0.5f;
 	public float sellValLerpWeight = 0.5f;
 
+	public float randStartMinValue = -10f;
+	public float randStartMaxValue = 10f;
+
 	[Header("TestStockGenerator: Dynamically Set Fields")]
 	public int currNumSold;
 	public int currNumBought;
@@ -23,8 +26,8 @@ public class TestStockGenerator : StockGenerator
 
 	public override float getNextStockValue()
 	{
-		float minVal = -10f;
-		float maxVal = 10f;
+		float minVal = randStartMinValue;
+		float maxVal = randStartMaxValue;
 
 		int difference = currNumBought - currNumSold;
 		if (difference < 0)
