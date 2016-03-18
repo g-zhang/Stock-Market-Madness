@@ -5,17 +5,18 @@ using InControl;
 public class Player : MonoBehaviour {
 
     public int playerNum;
+    private PlayerControls controls;
 
     [Header("Status")]
     public float currentMoney;
     public int[] CompanyShares = new int[(int)CompanyName.size];
-    public bool holdState = false;
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
     public CompanyName selectedCompany = CompanyName.none;
     private CompanyName prevCompany = CompanyName.none;
 
     [Header("Config")]
+    public PlayerControls.Profile controlLayout = PlayerControls.Profile.Layout0;
     public float delayActionTime = .5f; //time to hold the button before it starts auto buying/selling
     public float holdActionRate = 4f; //rate of auto buying/selling
     int sharesPerAction = 1000; //number of shares bought per button press
@@ -23,52 +24,60 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        controls = new PlayerControls(playerNum);
+        controls.profile = controlLayout;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        var inputDevice = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-        if (inputDevice != null)
+        controls.profile = controlLayout;
+        if (controls.Update())
         {
-            ControlsUpdate(inputDevice);
-        } else
-        {
-            return;
+            UpdateControlLayouts();
+            ControlsUpdate();
         }
     }
 
-    void ControlsUpdate(InputDevice input)
+    void UpdateControlLayouts()
+    {
+        if(controls.MenuButton)
+        {
+            //rotate between the layout profiles
+            controlLayout = (PlayerControls.Profile)((int)(controlLayout + 1) % (int)PlayerControls.Profile.size);
+        }
+    }
+
+    void ControlsUpdate()
     {
         prevCompany = selectedCompany;
         selectedCompany = CompanyName.none;
 
-        if(input.DPadLeft || input.LeftStick.Left)
+        if(controls.Selection1)
         {
             selectedCompany = CompanyName.A;
         }
-        if(input.DPadDown || input.LeftStick.Down)
+        if(controls.Selection2)
         {
             selectedCompany = CompanyName.B;
         }
-        if(input.DPadRight || input.LeftStick.Right)
+        if(controls.Selection3)
         {
             selectedCompany = CompanyName.C;
         }
 
         if(selectedCompany != CompanyName.none)
         {
-            if(input.Action1.WasPressed)
+            if(controls.BuyPressed)
             {
                 BuyShares(selectedCompany);
             }
-            if(input.Action2.WasPressed)
+            if (controls.SellPressed)
             {
                 SellShares(selectedCompany);
             }
 
             //hold button down logic
-            if(input.Action1 || input.Action2)
+            if(controls.Buy || controls.Sell)
             {
                 currDelayTime += Time.deltaTime;
             }
@@ -79,11 +88,11 @@ public class Player : MonoBehaviour {
                 if(currHoldTime >= 1f / holdActionRate)
                 {
                     currHoldTime = 0f;
-                    if(input.Action1)
+                    if(controls.Buy)
                     {
                         BuyShares(selectedCompany);
                     }
-                    if(input.Action2)
+                    if(controls.Sell)
                     {
                         SellShares(selectedCompany);
                     }
@@ -91,8 +100,8 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(currDelayTime != 0 && !(input.Action1 || input.Action2) ||
-                           input.DPad.HasChanged || prevCompany != selectedCompany)
+        if(currDelayTime != 0 && !(controls.Buy || controls.Sell) ||
+                           prevCompany != selectedCompany)
         {
             currDelayTime = 0f;
             currHoldTime = 0f;
