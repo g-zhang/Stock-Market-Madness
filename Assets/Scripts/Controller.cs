@@ -13,6 +13,8 @@ public class Controller : MonoBehaviour
 
 	public int roundDataPointsAdded;
 
+	public List<View> views;
+
 	void Awake()
 	{
 		roundElapsedTime = 0;
