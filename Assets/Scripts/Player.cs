@@ -4,15 +4,20 @@ using InControl;
 
 public class Player : MonoBehaviour {
 
+    public enum Phase { BuySell = 0, Business, size };
+
     public int playerNum;
     private PlayerControls controls;
 
     [Header("Status")]
+    public Phase currentGamePhase = Phase.BuySell;
+    private Phase prevPhase;
     public float currentMoney;
     public int[] CompanyShares = new int[(int)CompanyName.size];
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
     public CompanyName selectedCompany = CompanyName.none;
+    public CompanyDecisions selectedDecision = CompanyDecisions.none;
     private CompanyName prevCompany = CompanyName.none;
 
     [Header("Config")]
@@ -26,6 +31,7 @@ public class Player : MonoBehaviour {
 	void Start () {
         controls = new PlayerControls(playerNum);
         controls.profile = controlLayout;
+        prevPhase = currentGamePhase;
 	}
 	
 	// Update is called once per frame
@@ -33,41 +39,87 @@ public class Player : MonoBehaviour {
         controls.profile = controlLayout;
         if (controls.Update())
         {
-            UpdateControlLayouts();
             ControlsUpdate();
         }
-    }
 
-    void UpdateControlLayouts()
-    {
-        if(controls.MenuButton)
+        if(prevPhase != currentGamePhase)
         {
-            //rotate between the layout profiles
-            controlLayout = (PlayerControls.Profile)((int)(controlLayout + 1) % (int)PlayerControls.Profile.size);
+            ResetBusinessDecision();
+            prevPhase = currentGamePhase;
         }
     }
 
     void ControlsUpdate()
     {
+        if (controls.MenuButton)
+        {
+            //rotate between the layout profiles
+            controlLayout = (PlayerControls.Profile)((int)(controlLayout + 1) % (int)PlayerControls.Profile.size);
+        }
+
         prevCompany = selectedCompany;
         selectedCompany = CompanyName.none;
 
-        if(controls.Selection1)
+        switch(currentGamePhase)
+        {
+            case Phase.BuySell:
+                RealTimePhaseControls();
+                break;
+
+            case Phase.Business:
+                BusinessDecisionPhaseControls();
+                break;
+
+            default:
+                return;
+        }
+        
+        
+    }
+
+    void ResetBusinessDecision()
+    {
+        selectedDecision = CompanyDecisions.none;
+    }
+
+    void BusinessDecisionPhaseControls()
+    {
+        if(controls.ButtonX)
+        {
+            selectedDecision = CompanyDecisions.X;
+        }
+        if (controls.ButtonY)
+        {
+            selectedDecision = CompanyDecisions.Y;
+        }
+        if (controls.ButtonA)
+        {
+            selectedDecision = CompanyDecisions.A;
+        }
+        if (controls.ButtonB)
+        {
+            selectedDecision = CompanyDecisions.B;
+        }
+    }
+
+    void RealTimePhaseControls()
+    {
+        if (controls.Selection1)
         {
             selectedCompany = CompanyName.A;
         }
-        if(controls.Selection2)
+        if (controls.Selection2)
         {
             selectedCompany = CompanyName.B;
         }
-        if(controls.Selection3)
+        if (controls.Selection3)
         {
             selectedCompany = CompanyName.C;
         }
 
-        if(selectedCompany != CompanyName.none)
+        if (selectedCompany != CompanyName.none)
         {
-            if(controls.BuyPressed)
+            if (controls.BuyPressed)
             {
                 BuyShares(selectedCompany);
             }
@@ -77,22 +129,22 @@ public class Player : MonoBehaviour {
             }
 
             //hold button down logic
-            if(controls.Buy || controls.Sell)
+            if (controls.Buy || controls.Sell)
             {
                 currDelayTime += Time.deltaTime;
             }
 
-            if(currDelayTime >= delayActionTime)
+            if (currDelayTime >= delayActionTime)
             {
                 currHoldTime += Time.deltaTime;
-                if(currHoldTime >= 1f / holdActionRate)
+                if (currHoldTime >= 1f / holdActionRate)
                 {
                     currHoldTime = 0f;
-                    if(controls.Buy)
+                    if (controls.Buy)
                     {
                         BuyShares(selectedCompany);
                     }
-                    if(controls.Sell)
+                    if (controls.Sell)
                     {
                         SellShares(selectedCompany);
                     }
@@ -100,14 +152,13 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(currDelayTime != 0 && !(controls.Buy || controls.Sell) ||
+        if (currDelayTime != 0 && !(controls.Buy || controls.Sell) ||
                            prevCompany != selectedCompany)
         {
             currDelayTime = 0f;
             currHoldTime = 0f;
         }
     }
-
 
     void BuyShares(CompanyName company)
     {

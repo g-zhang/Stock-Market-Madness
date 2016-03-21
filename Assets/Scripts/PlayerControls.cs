@@ -184,4 +184,37 @@ public class PlayerControls {
             }
         }
     }
+
+
+    public bool ButtonA
+    {
+        get
+        {
+            return inputDevice.Action1;
+        }
+    }
+
+    public bool ButtonB
+    {
+        get
+        {
+            return inputDevice.Action2;
+        }
+    }
+
+    public bool ButtonX
+    {
+        get
+        {
+            return inputDevice.Action3;
+        }
+    }
+
+    public bool ButtonY
+    {
+        get
+        {
+            return inputDevice.Action4;
+        }
+    }
 }
