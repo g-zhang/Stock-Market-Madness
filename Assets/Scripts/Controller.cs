@@ -17,7 +17,7 @@ public class Controller : MonoBehaviour
 	public List<View> views;
 	#endregion
 
-	#region Unity Functions
+	#region Unity Methods
 	void Awake()
 	{
 		roundElapsedTime = 0;

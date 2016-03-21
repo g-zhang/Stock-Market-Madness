@@ -1,77 +1,22 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public class Model
 {
 	#region Tuning Fields
-	public readonly List<Stock> stocks = new List<Stock>
-	{
-		// I want to change this due to encapsulation issues.
-		// I'll probably use a constructor, but I'm not sure yet.
-		new Stock
+	public readonly ReadOnlyCollection<Stock> stocks =
+		new ReadOnlyCollection<Stock>(new List<Stock>
 		{
-			name = "Company A",
-			numAvailable = 1000000,
+			new Stock("Company A", 1000000, 25f, 0.0001f, 0.9f, 1f),
+			new Stock("Company B", 1000000, 25f, 0.0001f, 0.9f, 1f),
+			new Stock("Company C", 1000000, 25f, 0.0001f, 0.9f, 1f)
+		});
 
-			negMinDiffWeight = 0.0001f,
-			negMaxDiffWeight = 0.0001f,
-
-			posMinDiffWeight = 0.0001f,
-			posMaxDiffWeight = 0.0001f,
-
-			buyValLerpWeight = 0.9f,
-			sellValLerpWeight = 0.9f,
-
-			randStartMinValue = -1f,
-			randStartMaxValue = 1f,
-
-			Price = Random.Range(-5f, 5f) + 25f
-		},
-		new Stock
+	public readonly ReadOnlyCollection<MarketForce> marketForces =
+		new ReadOnlyCollection<MarketForce>(new List<MarketForce>
 		{
-			name = "Company B",
-			numAvailable = 1000000,
-
-			negMinDiffWeight = 0.0001f,
-			negMaxDiffWeight = 0.0001f,
-
-			posMinDiffWeight = 0.0001f,
-			posMaxDiffWeight = 0.0001f,
-
-			buyValLerpWeight = 0.9f,
-			sellValLerpWeight = 0.9f,
-
-			randStartMinValue = -1f,
-			randStartMaxValue = 1f,
-
-			Price = Random.Range(-5f, 5f) + 25f
-		},
-		new Stock
-		{
-			name = "Company C",
-			numAvailable = 1000000,
-
-			negMinDiffWeight = 0.0001f,
-			negMaxDiffWeight = 0.0001f,
-
-			posMinDiffWeight = 0.0001f,
-			posMaxDiffWeight = 0.0001f,
-
-			buyValLerpWeight = 0.9f,
-			sellValLerpWeight = 0.9f,
-
-			randStartMinValue = -1f,
-			randStartMaxValue = 1f,
-
-			Price = Random.Range(-5f, 5f) + 25f
-		}
-	};
-
-
-	public List<MarketForce> marketForces = new List<MarketForce>
-	{
-		// TODO
-	};
+			// TODO
+		});
 	#endregion
 
 	#region Dynamic Fields
@@ -96,7 +41,7 @@ public class Model
 	private Model() { }
 	#endregion
 
-	#region Functions
+	#region Methods
 	public void Tick()
 	{
 		foreach (MarketForce mf in marketForces)
@@ -124,15 +69,21 @@ public class Model
 
 	public bool Buy(Trader trader, Stock stock, int number)
 	{
-		if (trader.money < stock.Price * number || stock.numAvailable < number)
+		if ((trader.money < stock.Price * number) || !stock.Buy(number))
 		{
 			return false;
 		}
 
 		trader.money -= stock.Price * number;
-		stock.numAvailable -= number;
-		if (trader.shares.ContainsKey(stock)) trader.shares[stock] += number;
-		else trader.shares.Add(stock, number);
+		if (trader.shares.ContainsKey(stock))
+		{
+			trader.shares[stock] += number;
+		}
+		else
+		{
+			trader.shares.Add(stock, number);
+		}
+
 		return true;
 	}
 
@@ -143,9 +94,11 @@ public class Model
 			return false;
 		}
 
+		stock.Sell(number);
+
 		trader.money += stock.Price * number;
 		trader.shares[stock] -= number;
-		stock.numAvailable += number;
+
 		return true;
 	}
 
