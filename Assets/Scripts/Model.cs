@@ -5,12 +5,14 @@ public class Model {
 	public Queue<StockEvent> eventQueue;
 	public List<Trader> traders;
 	public List<Stock> stocks;
+	public List<MarketForce> marketForces;
 
 	public static Model S;
 	public Model() { S = this; }
 
 	public void Tick() {
-
+		foreach (MarketForce mf in marketForces) mf.Tick();
+		foreach (Stock s in stocks) s.Tick();
 	}
 
 	public void BeginNewPeriod() {

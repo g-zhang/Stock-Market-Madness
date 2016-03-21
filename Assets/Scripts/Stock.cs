@@ -10,7 +10,11 @@ public class Stock {
 		get {
 			return (ThisPeriodData.Count == 0) ? float.MaxValue : ThisPeriodData[ThisPeriodData.Count - 1];
 		}
-		set { ThisPeriodData.Add(value); }
+		set { ThisPeriodData[ThisPeriodData.Count - 1] = value; }
+	}
+
+	public void Tick() {
+		ThisPeriodData.Add(Price);
 	}
 
 	public Dictionary<Trader, int> owners {
