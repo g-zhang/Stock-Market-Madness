@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class Controller : MonoBehaviour
 {
+	#region Fields
 	[Header("Controller: Inspector Set Variables")]
 	public float roundTimeSeconds = 60.0f;
 	public int roundDataPoints = 120;
@@ -14,7 +15,9 @@ public class Controller : MonoBehaviour
 	public int roundDataPointsAdded;
 
 	public List<View> views;
+	#endregion
 
+	#region Unity Functions
 	void Awake()
 	{
 		roundElapsedTime = 0;
@@ -33,7 +36,7 @@ public class Controller : MonoBehaviour
 
 		while (neededDataPoints > roundDataPointsAdded)
 		{
-			// Advance Model.
+			Model.Instance.Tick();
 			++roundDataPointsAdded;
 		}
 
@@ -42,10 +45,11 @@ public class Controller : MonoBehaviour
 		{
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
-			
-			// End Model round.
+
+			Model.Instance.BeginNewPeriod();
 		}
 
 		return;
 	}
+	#endregion
 }
