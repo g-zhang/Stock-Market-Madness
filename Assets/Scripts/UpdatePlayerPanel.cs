@@ -12,9 +12,7 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	public Text[] CompanyShares;
 
 	public float timeTilDiffText;
-	public float diffTextDisplayTime;
 	float timeSinceMoneyDiff;
-	float timeSinceDisplay;
 	float lastMoney;
 	float MoneyDiffValue;
 
@@ -34,19 +32,22 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	}
 
 	void updateMoney(float newValue) {
-		// If money is changing since last time
-		if (lastMoney != newValue) {
-			// start timer
-			if ((Time.timeSinceLevelLoad - timeSinceMoneyDiff) >= timeTilDiffText) {
-				MoneyDiffValue = 0;
+		// start timer and reset MoneyDiffValue if its been a while since last change
+		if ((Time.timeSinceLevelLoad - timeSinceMoneyDiff) >= timeTilDiffText) {
+			if (MoneyDiffValue != 0) {
+				timeSinceMoneyDiff = Time.timeSinceLevelLoad;
+				displayChange (MoneyDiffValue);
 			}
+			MoneyDiffValue = 0;
+		}
 
+		// If money is changing since last time,
+		// update MoneyDiffValue
+		if (lastMoney != newValue) {
 			timeSinceMoneyDiff = Time.timeSinceLevelLoad;
 			MoneyDiffValue += newValue - lastMoney;
 			lastMoney = newValue;
 		}
-
-		displayChange (MoneyDiffValue);
 
 		string finalValue = string.Format ("{0:C}", newValue);
 		finalValue = finalValue.Insert (1, " ");
@@ -78,30 +79,21 @@ public class UpdatePlayerPanel : MonoBehaviour {
 	}
 
 	void displayChange(float changeValue) {
-		if ((Time.timeSinceLevelLoad - timeSinceDisplay) >= diffTextDisplayTime) {
-			MoneyDiff.enabled = false;
-		}
+		Text tempText = Instantiate (MoneyDiff, MoneyDiff.transform.position, MoneyDiff.transform.rotation) as Text;
+		tempText.transform.SetParent (this.transform);
+		tempText.transform.localScale = new Vector3 (1f, 1f, 1f);
 
-		// If the amount didn't change, or there was a change made recently
-		if (changeValue == 0 || (Time.timeSinceLevelLoad - timeSinceMoneyDiff) < timeTilDiffText) {
-			MoneyDiff.enabled = false;
-			return;
-		}
+		tempText.GetComponent<MoneyDiffController> ().displayValue (changeValue);
 
-		if (MoneyDiff.enabled == false) {
-			MoneyDiff.enabled = true;
-			timeSinceDisplay = Time.timeSinceLevelLoad;
-		}
-		// if changeValue is a positive number
 		if (changeValue > 0) {
-			MoneyDiff.text = string.Format ("{0:C}", changeValue).Insert (1, " ").Insert (0, "+");
-			MoneyDiff.color = Color.green;
+			string message = "Player " + (GetComponent<Player> ().playerNum + 1).ToString() + " has earned " + string.Format ("{0:C}", changeValue);
+			TickerController.S.addBreakingNews (message);
 		}
-		// if negative...
-		else {
+		if (changeValue < 0) {
 			changeValue *= -1;
-			MoneyDiff.text = string.Format ("{0:C}", changeValue).Insert(1, " ").Insert(0, "-");
-			MoneyDiff.color = Color.red;
+
+			string message = "Player " + (GetComponent<Player> ().playerNum + 1).ToString() + " has lost " + string.Format ("{0:C}", changeValue);
+			TickerController.S.addBreakingNews (message);
 		}
 	}
 }

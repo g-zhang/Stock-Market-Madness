@@ -17,16 +17,7 @@ public class TickerController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.Q)) {
-			displayNextNews ();
-			print (currentTexts.Count);
-		}
-			
-		if (Input.GetKeyDown (KeyCode.W)) {
-			destroyOldNews ();
-		}
-			
+	void Update () {			
 		// If there is strings left in tickerQueue,
 			// then show the next text
 		if (tickerQueue.Count > 0) {
