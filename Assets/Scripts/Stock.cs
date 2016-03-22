@@ -15,8 +15,13 @@ public class Stock
 	#endregion
 
 	#region Dynamic Fields
-	private int currNumSold;
-	private int currNumBought;
+	private Dictionary<Trader, int> tradersCurrNumSold;
+	private int generalCurrNumSold;
+	private int companyCurrNumSold;
+
+	private Dictionary<Trader, int> tradersCurrNumBought;
+	private int generalCurrNumBought;
+	private int companyCurrNumBought;
 
 	private List<List<float>> priceHistoryByPeriod;
 	#endregion
@@ -25,11 +30,14 @@ public class Stock
 	public Stock(string inName, int inNumStocks, float startPriceBase,
 		float inDiffWeights, float inLerpWeights, float inRandStartAbsVal)
 	{
-		currNumSold = 0;
-		currNumBought = 0;
-
 		name = inName;
 		numAvailable = inNumStocks;
+
+		generalCurrNumSold = 0;
+		companyCurrNumSold = 0;
+
+		generalCurrNumBought = 0;
+		companyCurrNumBought = 0;
 
 		diffWeights = inDiffWeights;
 		lerpWeights = inLerpWeights;
@@ -88,6 +96,18 @@ public class Stock
 	#region Data Progression Methods
 	public void Tick()
 	{
+		int currNumSold = generalCurrNumSold + companyCurrNumSold;
+		foreach (int numSold in tradersCurrNumSold.Values)
+		{
+			currNumSold += numSold;
+		}
+
+		int currNumBought = generalCurrNumBought + companyCurrNumBought;
+		foreach (int numBought in tradersCurrNumBought.Values)
+		{
+			currNumBought += numBought;
+		}
+
 		float minVal = -randStartAbsVal;
 		float maxVal = randStartAbsVal;
 
@@ -103,6 +123,22 @@ public class Stock
 			maxVal += diffWeights * difference;
 		}
 		minVal = Mathf.Max(minVal, 1 - Price);
+
+		generalCurrNumSold =
+			Mathf.FloorToInt(Mathf.Lerp(0f, generalCurrNumSold, lerpWeights));
+		companyCurrNumSold =
+			Mathf.FloorToInt(Mathf.Lerp(0f, companyCurrNumSold, lerpWeights));
+
+		generalCurrNumBought =
+			Mathf.FloorToInt(Mathf.Lerp(0f, generalCurrNumBought, lerpWeights));
+		companyCurrNumBought =
+			Mathf.FloorToInt(Mathf.Lerp(0f, companyCurrNumBought, lerpWeights));
+
+		foreach (Trader trader in Model.Instance.traders)
+		{
+			tradersCurrNumSold[trader] =
+				Mathf.FloorToInt(Mathf.Lerp(0f, tradersCurrNumSold[trader], lerpWeights));
+		}
 
 		currNumSold =
 			Mathf.FloorToInt(Mathf.Lerp(0f, currNumSold, lerpWeights));
@@ -120,23 +156,30 @@ public class Stock
 	}
 	#endregion
 
-	public bool Buy(int numStocks)
+	public bool Buy(Trader trader, int numStocks)
 	{
 		if (numStocks > numAvailable)
 		{
 			return false;
 		}
-
-		currNumBought += numStocks;
 		numAvailable -= numStocks;
+
+		if (tradersCurrNumBought.ContainsKey(trader))
+		{
+			tradersCurrNumBought[trader] += numStocks;
+		}
 
 		return true;
 	}
 
-	public void Sell(int numStocks)
+	public void Sell(Trader trader, int numStocks)
 	{
-		currNumSold += numStocks;
-		numAvailable -= numStocks;
+		numAvailable += numStocks;
+
+		if (tradersCurrNumSold.ContainsKey(trader))
+		{
+			tradersCurrNumSold[trader] += numStocks;
+		}
 
 		return;
 	}
@@ -157,6 +200,14 @@ public class Stock
 		int periodIdx = priceHistoryByPeriod.Count - periodsAgo - 1;
 		return (periodIdx < 0) ?
 			new List<float>() : priceHistoryByPeriod[periodIdx];
+	}
+
+	public void AddTrader(Trader trader)
+	{
+		tradersCurrNumSold.Add(trader, 0);
+		tradersCurrNumBought.Add(trader, 0);
+
+		return;
 	}
 	#endregion
 
