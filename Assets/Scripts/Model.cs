@@ -34,7 +34,7 @@ public class Model
 	#endregion
 
 	#region Dynamic Fields
-	private GamePhases gamePhase = GamePhases.Market;
+	public GamePhases gamePhase = GamePhases.Market;
 
 	private float roundElapsedTime = 0f;
 	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
@@ -92,6 +92,7 @@ public class Model
 		{
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
+			gamePhase = GamePhases.Business;
 		}
 
 		return;
