@@ -1,20 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class TickerTextController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+	public float scrollSpeed;
+	public bool isTemplate = true;
 	
 	// Update is called once per frame
 	void Update () {
-	
+		// If object is offscreen, destroy itself
+		if (transform.localPosition.x <= -1f * GetComponent<RectTransform> ().sizeDelta.x) {
+			TickerController.S.destroyOldNews ();
+		}
+		if (!isTemplate) {
+			transform.position += new Vector3 (-scrollSpeed, 0, 0);
+		}
 	}
 
 	// returns true if all of the text is shown
 	public bool hasFullyShown() {
-
+		if (transform.localPosition.x <= (800f - GetComponent<RectTransform> ().sizeDelta.x)) {
+			return true;
+		}
+		return false;
 	}
 }
