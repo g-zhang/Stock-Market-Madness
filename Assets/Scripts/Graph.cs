@@ -24,5 +24,8 @@ public class Graph : MonoBehaviour {
 			lineScr.graphDimensions = graphDimensions;
 			lineScr.color = lineColors[colorIdx++];
 		}
+		for (int i = 0; i < periodsToShow; i++) {
+
+		}
 	}
 }
