@@ -14,8 +14,8 @@ public class Model
 	#region Tuning Fields
 	private const int defaultStartingMoney = 50000;
 
-	public const float roundTimeSeconds = 60f;
-	public const int roundDataPoints = 120;
+	public const float roundTimeSeconds = 1f;
+	public const int roundDataPoints = 20;
 
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
@@ -36,8 +36,7 @@ public class Model
 	private GamePhases gamePhase = GamePhases.Market;
 
 	private float roundElapsedTime = 0f;
-	private float timeBetweenDataPoints =
-		roundDataPoints / roundTimeSeconds;
+	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
 	private int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
@@ -92,11 +91,6 @@ public class Model
 		{
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
-
-			foreach (Stock s in stocks)
-			{
-				s.AdvancePeriod();
-			}
 		}
 
 		return;

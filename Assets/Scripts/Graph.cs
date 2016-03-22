@@ -4,6 +4,7 @@ using System.Collections;
 public class Graph : MonoBehaviour {
 	public GameObject linePrefab;
 	public int periodsToShow;
+	public Vector2 graphDimensions;
 	void Start () {
 		if (linePrefab.GetComponent<LineRenderer>() == null ||
 			linePrefab.GetComponent<StockLine>() == null) {
@@ -16,7 +17,9 @@ public class Graph : MonoBehaviour {
 			StockLine lineScr = lineObj.GetComponent<StockLine>();
 			if (lineScr == null) return;
 			lineScr.stock = stock;
-			lineScr.maxDataPointsOnGraph = periodsToShow * Model.Instance.roundDataPoints;
+			lineScr.maxDataPointsOnGraph = periodsToShow * Model.roundDataPoints;
+			lineScr.maxPriceOnGraph = 70f;
+			lineScr.graphDimensions = graphDimensions;
 		}
 	}
 }

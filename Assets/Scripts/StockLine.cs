@@ -7,6 +7,7 @@ public class StockLine : MonoBehaviour {
 	private LineRenderer lineRenderer;
 	public float maxPriceOnGraph;
 	public int maxDataPointsOnGraph;
+	public Vector2 graphDimensions;
 
 	void Awake() {
 		lineRenderer = GetComponent<LineRenderer>();
@@ -17,7 +18,8 @@ public class StockLine : MonoBehaviour {
 	}
 
 	void Update() {
-		List<float> prices = stock.LastNPeriods(3);
+		List<float> prices = stock.priceHistory;
+		while (prices.Count > maxDataPointsOnGraph) prices.RemoveAt(0);
 		Vector3[] newLinePoints = new Vector3[prices.Count];
 		for (int idx = 0; idx < prices.Count; idx++)
 			newLinePoints[idx] = PriceDataToLocalPoint(idx + maxDataPointsOnGraph - prices.Count, prices[idx]);
@@ -26,10 +28,9 @@ public class StockLine : MonoBehaviour {
 	}
 
 	public Vector3 PriceDataToLocalPoint(int idx, float price) {
-		float maxX = transform.localScale.x * 2;
-		float maxY = transform.localScale.y * 2;
-		float x = idx * maxX / maxDataPointsOnGraph;
-		float y = price * maxY / maxPriceOnGraph;
-		return new Vector3(x, y, 0) - transform.localScale;
+		float x = idx * graphDimensions.x / maxDataPointsOnGraph - graphDimensions.x / 2f;
+		float y = price * graphDimensions.y / maxPriceOnGraph - graphDimensions.y / 2f;
+		//print("price:"+price+" idx:"+idx+" x:"+x+" y:"+y);
+		return new Vector3(x, y, -0.1f);
 	}
 }

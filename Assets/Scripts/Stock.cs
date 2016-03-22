@@ -18,7 +18,7 @@ public class Stock
 	private int currNumSold;
 	private int currNumBought;
 
-	private List<List<float>> priceHistoryByPeriod;
+	public List<float> priceHistory;
 	#endregion
 
 	#region Constructor
@@ -35,11 +35,9 @@ public class Stock
 		lerpWeights = inLerpWeights;
 		randStartAbsVal = inRandStartAbsVal;
 
-		priceHistoryByPeriod = new List<List<float>>();
-		AdvancePeriod();
-
-		Price =
-			startPriceBase + Random.Range(-randStartAbsVal, randStartAbsVal);
+		priceHistory = new List<float>();
+		
+		Price = startPriceBase + Random.Range(-randStartAbsVal, randStartAbsVal);
 
 		return;
 	}
@@ -58,29 +56,14 @@ public class Stock
 	{
 		get
 		{
-			return (ThisPeriodData.Count == 0) ?
-				float.MaxValue : ThisPeriodData[ThisPeriodData.Count - 1];
+			return (priceHistory.Count == 0) ?
+				float.MaxValue :
+				priceHistory[priceHistory.Count - 1];
 		}
 		private set
 		{
-			ThisPeriodData.Add(value);
+			priceHistory.Add(value);
 			return;
-		}
-	}
-
-	public float PeriodDelta
-	{
-		get
-		{
-			return Price - ThisPeriodData[0];
-		}
-	}
-
-	public List<float> ThisPeriodData
-	{
-		get
-		{
-			return PeriodsAgoData(0);
 		}
 	}
 	#endregion
@@ -112,12 +95,6 @@ public class Stock
 		Price += Random.Range(minVal, maxVal);
 		return;
 	}
-
-	public void AdvancePeriod()
-	{
-		priceHistoryByPeriod.Add(new List<float>());
-		return;
-	}
 	#endregion
 
 	public bool Buy(int numStocks)
@@ -140,25 +117,7 @@ public class Stock
 
 		return;
 	}
-
-	#region Helper Methods
-	public List<float> LastNPeriods(int n)
-	{
-		List<float> l = new List<float>();
-		for (int i = 0; i < n; i++)
-		{
-			l.AddRange(PeriodsAgoData(i));
-		}
-		return l;
-	}
-
-	public List<float> PeriodsAgoData(int periodsAgo)
-	{
-		int periodIdx = priceHistoryByPeriod.Count - periodsAgo - 1;
-		return (periodIdx < 0) ?
-			new List<float>() : priceHistoryByPeriod[periodIdx];
-	}
-	#endregion
+	
 
 	/*
 	I'm not sure what the purpose of this is, so I'm commenting it out for now.
