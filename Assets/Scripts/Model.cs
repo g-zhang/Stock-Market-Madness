@@ -34,11 +34,11 @@ public class Model
 	#endregion
 
 	#region Dynamic Fields
-	private GamePhases gamePhase = GamePhases.Market;
+	public GamePhases gamePhase = GamePhases.Market;
 
 	private float roundElapsedTime = 0f;
 	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
-	private int roundDataPointsAdded = 0;
+	public int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
 	public List<Trader> traders = new List<Trader>();
@@ -92,6 +92,7 @@ public class Model
 		{
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
+			gamePhase = GamePhases.Business;
 		}
 
 		return;
