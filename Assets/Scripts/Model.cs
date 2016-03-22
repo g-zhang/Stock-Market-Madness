@@ -95,7 +95,6 @@ public class Model
 		}
 
 		stock.Sell(number);
-
 		trader.money += stock.Price * number;
 		trader.shares[stock] -= number;
 

@@ -15,6 +15,6 @@ public class TickerTextController : MonoBehaviour {
 
 	// returns true if all of the text is shown
 	public bool hasFullyShown() {
-
+		return true; // for now so the game compiles
 	}
 }

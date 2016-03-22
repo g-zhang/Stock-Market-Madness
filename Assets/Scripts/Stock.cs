@@ -155,6 +155,8 @@ public class Stock
 	/*
 	I'm not sure what the purpose of this is, so I'm commenting it out for now.
 
+	David - the purpose is that you can weight players' decisions' importances based on who owns how much of the company.
+
 	public Dictionary<Trader, int> owners
 	{
 		get
