@@ -123,6 +123,8 @@ public class Stock
 		{
 			tradersCurrNumSold[trader] =
 				Mathf.FloorToInt(Mathf.Lerp(0f, tradersCurrNumSold[trader], lerpWeights));
+			tradersCurrNumBought[trader] =
+				Mathf.FloorToInt(Mathf.Lerp(0f, tradersCurrNumBought[trader], lerpWeights));
 		}
 
 		currNumSold =
