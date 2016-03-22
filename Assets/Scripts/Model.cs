@@ -18,9 +18,9 @@ public class Model
 
 	public const float preStartRoundTimeSeconds = 5f;
 	public const int numPreStartRounds = 2;
-
-	public const float roundTimeSeconds = 1f;
-	public const int roundDataPoints = 20;
+	
+	public const float roundTimeSeconds = 60f;
+	public const int roundDataPoints = 120;
 
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
@@ -98,8 +98,8 @@ public class Model
 		}
 		}
 
-		return;
-	}
+			return;
+		}
 
 	private void MarketTick()
 	{

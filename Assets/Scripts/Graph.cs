@@ -27,6 +27,7 @@ public class Graph : MonoBehaviour {
 
 		foreach (Stock stock in Model.Instance.stocks) {
 			GameObject lineObj = Instantiate(linePrefab) as GameObject;
+			lineObj.transform.position = transform.position;
 			lineObj.transform.parent = transform;
 			StockLine lineScr = lineObj.GetComponent<StockLine>();
 			if (lineScr == null) return;
@@ -39,6 +40,7 @@ public class Graph : MonoBehaviour {
 
 		for (int i = 0; i < periodsToShow; i++) {
 			GameObject dateLine = Instantiate(dateLinePrefab) as GameObject;
+			dateLine.transform.position = transform.position;
 			dateLine.transform.parent = transform;
 			DateLine dateLineScr = dateLine.GetComponent<DateLine>();
 			dateLineScr.maxDataPointsOnGraph = periodsToShow* Model.roundDataPoints;
