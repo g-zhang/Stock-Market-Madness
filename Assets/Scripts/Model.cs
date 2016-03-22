@@ -12,7 +12,8 @@ public enum GamePhases
 public class Model
 {
 	#region Tuning Fields
-	private const int defaultStartingMoney = 50000;
+	private const int startingMoney = 50000;
+	private const int startingSharesPerCompany = 100000;
 
 	public const float roundTimeSeconds = 1f;
 	public const int roundDataPoints = 20;
@@ -40,7 +41,7 @@ public class Model
 	public int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
-	public List<Trader> traders;
+	public List<Trader> traders = new List<Trader>();
 	#endregion
 
 	#region Singleton Implementation
@@ -96,39 +97,35 @@ public class Model
 		return;
 	}
 
-	public void AddTrader(string inName)
-	{
-		AddTrader(defaultStartingMoney, inName);
-		return;
-	}
-
-	public void AddTrader(int startMoney = defaultStartingMoney, string inName = null)
+	public void AddTrader(string inName = null)
 	{
 		if (inName == null)
 		{
 			inName = string.Format("Player {0}", traders.Count + 1);
 		}
 
-		traders.Add(new Trader(inName, startMoney));
+		Trader newTrader = new Trader(inName, startingMoney);
+		foreach (Stock s in stocks)
+		{
+			newTrader.shares.Add(s, startingSharesPerCompany);
+			s.Buy(newTrader, startingSharesPerCompany);
+
+			s.AddTrader(newTrader);
+		}
+		traders.Add(newTrader);
+
 		return;
 	}
 
 	public bool Buy(Trader trader, Stock stock, int number)
 	{
-		if ((trader.money < stock.Price * number) || !stock.Buy(number))
+		if ((trader.money < stock.Price * number) || !stock.Buy(trader, number))
 		{
 			return false;
 		}
 
 		trader.money -= stock.Price * number;
-		if (trader.shares.ContainsKey(stock))
-		{
 			trader.shares[stock] += number;
-		}
-		else
-		{
-			trader.shares.Add(stock, number);
-		}
 
 		return true;
 	}
@@ -140,7 +137,8 @@ public class Model
 			return false;
 		}
 
-		stock.Sell(number);
+		stock.Sell(trader, number);
+
 		trader.money += stock.Price * number;
 		trader.shares[stock] -= number;
 
