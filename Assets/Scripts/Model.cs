@@ -37,7 +37,7 @@ public class Model
 
 	private float roundElapsedTime = 0f;
 	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
-	private int roundDataPointsAdded = 0;
+	public int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
 	public List<Trader> traders;
