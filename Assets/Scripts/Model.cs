@@ -41,7 +41,7 @@ public class Model
 	private int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
-	public List<Trader> traders;
+	public List<Trader> traders = new List<Trader>();
 	#endregion
 
 	#region Singleton Implementation
