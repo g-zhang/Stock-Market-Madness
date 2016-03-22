@@ -97,7 +97,7 @@ public class Model
 		return;
 	}
 
-	public void AddTrader(string inName)
+	public void AddTrader(string inName = null)
 	{
 		if (inName == null)
 		{
