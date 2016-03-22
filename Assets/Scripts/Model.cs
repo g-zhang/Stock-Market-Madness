@@ -105,7 +105,7 @@ public class Model
 	{
 		roundElapsedTime += Time.deltaTime;
 		int neededDataPoints =
-			Mathf.FloorToInt(roundElapsedTime / preStartTimeBetweenDataPoints);
+			Mathf.FloorToInt(roundElapsedTime / timeBetweenDataPoints);
 
 		while (neededDataPoints > roundDataPointsAdded)
 		{
@@ -136,7 +136,7 @@ public class Model
 	{
 		roundElapsedTime += Time.deltaTime;
 		int neededDataPoints =
-			Mathf.FloorToInt(roundElapsedTime / timeBetweenDataPoints);
+			Mathf.FloorToInt(roundElapsedTime / preStartTimeBetweenDataPoints);
 
 		while (neededDataPoints > roundDataPointsAdded)
 		{
