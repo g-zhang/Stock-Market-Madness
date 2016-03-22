@@ -32,7 +32,13 @@ public class Player : MonoBehaviour {
     {
         get
         {
-            return playerData.money;
+            if(playerData != null)
+            {
+                return playerData.money;
+            } else
+            {
+                return 0f;
+            }
         }
     }
 
@@ -43,7 +49,7 @@ public class Player : MonoBehaviour {
             return playerData.shares[Model.Instance.stocks[(int)name]];
         } else
         {
-            return -1;
+            return 0;
         }
     }
 
@@ -55,7 +61,13 @@ public class Player : MonoBehaviour {
         prevPhase = currentGamePhase;
 
         //get player data on the market
+        //print(playerNum);
+        //print(Model.Instance.traders.Count);
         playerData = Model.Instance.traders[playerNum];
+        if(playerData == null)
+        {
+            print("ERROR Trader object doesn't exist!");
+        }
 	}
 	
 	// Update is called once per frame
