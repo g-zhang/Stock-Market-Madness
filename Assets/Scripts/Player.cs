@@ -6,15 +6,12 @@ public enum CompanyName { A, B, C, size, none }
 
 public class Player : MonoBehaviour {
 
-    public enum Phase { BuySell = 0, Business, size };
-
     public int playerNum;
     private PlayerControls controls;
     private Trader playerData;
+    private GamePhases prevPhase;
 
     [Header("Status")]
-    public Phase currentGamePhase = Phase.BuySell;
-    private Phase prevPhase;
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
     public CompanyName selectedCompany = CompanyName.none;
@@ -58,7 +55,7 @@ public class Player : MonoBehaviour {
 	void Start () {
         controls = new PlayerControls(playerNum);
         controls.profile = controlLayout;
-        prevPhase = currentGamePhase;
+        prevPhase = Model.Instance.gamePhase;
 
         //get player data on the market
         //print(playerNum);
@@ -78,10 +75,10 @@ public class Player : MonoBehaviour {
             ControlsUpdate();
         }
 
-        if(prevPhase != currentGamePhase)
+        if(prevPhase != Model.Instance.gamePhase)
         {
             ResetBusinessDecision();
-            prevPhase = currentGamePhase;
+            prevPhase = Model.Instance.gamePhase;
         }
     }
 
@@ -96,13 +93,13 @@ public class Player : MonoBehaviour {
         prevCompany = selectedCompany;
         selectedCompany = CompanyName.none;
 
-        switch(currentGamePhase)
+        switch (Model.Instance.gamePhase)
         {
-            case Phase.BuySell:
+            case GamePhases.Market:
                 RealTimePhaseControls();
                 break;
 
-            case Phase.Business:
+            case GamePhases.Business:
                 BusinessDecisionPhaseControls();
                 break;
 
