@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 public class Model
 {
 	#region Tuning Fields
+	private const int defaultStartingMoney = 50000;
+
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
 		{
@@ -64,6 +66,23 @@ public class Model
 			s.AdvancePeriod();
 		}
 
+		return;
+	}
+
+	public void AddTrader(string inName)
+	{
+		AddTrader(defaultStartingMoney, inName);
+		return;
+	}
+
+	public void AddTrader(int startMoney = defaultStartingMoney, string inName = null)
+	{
+		if (inName == null)
+		{
+			inName = string.Format("Player {0}", traders.Count + 1);
+		}
+
+		traders.Add(new Trader(inName, startMoney));
 		return;
 	}
 
