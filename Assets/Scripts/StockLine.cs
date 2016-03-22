@@ -8,6 +8,7 @@ public class StockLine : MonoBehaviour {
 	public float maxPriceOnGraph;
 	public int maxDataPointsOnGraph;
 	public Vector2 graphDimensions;
+	public Color color;
 
 	void Awake() {
 		lineRenderer = GetComponent<LineRenderer>();
@@ -15,6 +16,11 @@ public class StockLine : MonoBehaviour {
 			Debug.LogError("LineRenderer component not found on this object. Exiting.");
 			Destroy(this);
 		}
+	}
+
+	void Start() {
+
+		lineRenderer.SetColors(color, color);
 	}
 
 	void Update() {

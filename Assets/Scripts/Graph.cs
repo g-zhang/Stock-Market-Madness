@@ -5,12 +5,14 @@ public class Graph : MonoBehaviour {
 	public GameObject linePrefab;
 	public int periodsToShow;
 	public Vector2 graphDimensions;
-	void Start () {
+	public Color[] lineColors;
+	void Awake () {
 		if (linePrefab.GetComponent<LineRenderer>() == null ||
 			linePrefab.GetComponent<StockLine>() == null) {
 			Debug.LogError("The stock line prefab is not set up correctly. It needs a line renderer and the StockLine script.");
 			Destroy(this);
 		}
+		int colorIdx = 0;
 		foreach (Stock stock in Model.Instance.stocks) {
 			GameObject lineObj = Instantiate(linePrefab) as GameObject;
 			lineObj.transform.parent = transform;
@@ -20,6 +22,7 @@ public class Graph : MonoBehaviour {
 			lineScr.maxDataPointsOnGraph = periodsToShow * Model.roundDataPoints;
 			lineScr.maxPriceOnGraph = 70f;
 			lineScr.graphDimensions = graphDimensions;
+			lineScr.color = lineColors[colorIdx++];
 		}
 	}
 }
