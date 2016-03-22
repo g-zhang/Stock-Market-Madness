@@ -33,9 +33,11 @@ public class Stock
 		name = inName;
 		numAvailable = inNumStocks;
 
+		tradersCurrNumSold = new Dictionary<Trader, int>();
 		generalCurrNumSold = 0;
 		companyCurrNumSold = 0;
 
+		tradersCurrNumBought = new Dictionary<Trader, int>();
 		generalCurrNumBought = 0;
 		companyCurrNumBought = 0;
 
