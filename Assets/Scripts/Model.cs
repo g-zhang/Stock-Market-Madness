@@ -15,8 +15,8 @@ public class Model
 	private const int startingMoney = 50000;
 	private const int startingSharesPerCompany = 100000;
 
-	public const float roundTimeSeconds = 60f;
-	public const int roundDataPoints = 120;
+	public const float roundTimeSeconds = 1f;
+	public const int roundDataPoints = 20;
 
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
@@ -37,8 +37,7 @@ public class Model
 	private GamePhases gamePhase = GamePhases.Market;
 
 	private float roundElapsedTime = 0f;
-	private float timeBetweenDataPoints =
-		roundDataPoints / roundTimeSeconds;
+	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
 	private int roundDataPointsAdded = 0;
 
 	public Queue<StockEvent> eventQueue;
@@ -93,11 +92,6 @@ public class Model
 		{
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
-
-			foreach (Stock s in stocks)
-			{
-				s.AdvancePeriod();
-			}
 		}
 
 		return;
@@ -108,11 +102,11 @@ public class Model
 		if (inName == null)
 		{
 			inName = string.Format("Player {0}", traders.Count + 1);
-		}
+	}
 
 		Trader newTrader = new Trader(inName, startingMoney);
 		foreach (Stock s in stocks)
-		{
+	{
 			newTrader.shares.Add(s, startingSharesPerCompany);
 			s.Buy(newTrader, startingSharesPerCompany);
 
@@ -130,7 +124,7 @@ public class Model
 		}
 
 		trader.money -= stock.Price * number;
-		trader.shares[stock] += number;
+			trader.shares[stock] += number;
 
 		return true;
 	}

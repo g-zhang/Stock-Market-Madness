@@ -22,8 +22,8 @@ public class Stock
 	private Dictionary<Trader, int> tradersCurrNumBought;
 	private int generalCurrNumBought;
 	private int companyCurrNumBought;
-
-	private List<List<float>> priceHistoryByPeriod;
+	
+	public List<float> priceHistory;
 	#endregion
 
 	#region Constructor
@@ -45,11 +45,9 @@ public class Stock
 		lerpWeights = inLerpWeights;
 		randStartAbsVal = inRandStartAbsVal;
 
-		priceHistoryByPeriod = new List<List<float>>();
-		AdvancePeriod();
+		priceHistory = new List<float>();
 
-		Price =
-			startPriceBase + Random.Range(-randStartAbsVal, randStartAbsVal);
+		Price = startPriceBase + Random.Range(-randStartAbsVal, randStartAbsVal);
 
 		return;
 	}
@@ -68,29 +66,14 @@ public class Stock
 	{
 		get
 		{
-			return (ThisPeriodData.Count == 0) ?
-				float.MaxValue : ThisPeriodData[ThisPeriodData.Count - 1];
+			return (priceHistory.Count == 0) ?
+				float.MaxValue :
+				priceHistory[priceHistory.Count - 1];
 		}
 		private set
 		{
-			ThisPeriodData.Add(value);
+			priceHistory.Add(value);
 			return;
-		}
-	}
-
-	public float PeriodDelta
-	{
-		get
-		{
-			return Price - ThisPeriodData[0];
-		}
-	}
-
-	public List<float> ThisPeriodData
-	{
-		get
-		{
-			return PeriodsAgoData(0);
 		}
 	}
 	#endregion
@@ -150,14 +133,9 @@ public class Stock
 		Price += Random.Range(minVal, maxVal);
 		return;
 	}
-
-	public void AdvancePeriod()
-	{
-		priceHistoryByPeriod.Add(new List<float>());
-		return;
-	}
 	#endregion
 
+	#region General Interface Methods
 	public bool Buy(Trader trader, int numStocks)
 	{
 		if (numStocks > numAvailable)
@@ -186,24 +164,6 @@ public class Stock
 		return;
 	}
 
-	#region Helper Methods
-	public List<float> LastNPeriods(int n)
-	{
-		List<float> l = new List<float>();
-		for (int i = 0; i < n; i++)
-		{
-			l.AddRange(PeriodsAgoData(i));
-		}
-		return l;
-	}
-
-	public List<float> PeriodsAgoData(int periodsAgo)
-	{
-		int periodIdx = priceHistoryByPeriod.Count - periodsAgo - 1;
-		return (periodIdx < 0) ?
-			new List<float>() : priceHistoryByPeriod[periodIdx];
-	}
-
 	public void AddTrader(Trader trader)
 	{
 		tradersCurrNumSold.Add(trader, 0);
@@ -215,6 +175,8 @@ public class Stock
 
 	/*
 	I'm not sure what the purpose of this is, so I'm commenting it out for now.
+
+	David - the purpose is that you can weight players' decisions' importances based on who owns how much of the company.
 
 	public Dictionary<Trader, int> owners
 	{
