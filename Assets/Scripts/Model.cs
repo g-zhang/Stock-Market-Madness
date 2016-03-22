@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 
 public enum GamePhases
 {
+	PreStart,
 	Market,
 	Business
 }
@@ -14,6 +15,9 @@ public class Model
 	#region Tuning Fields
 	private const int startingMoney = 50000;
 	private const int startingSharesPerCompany = 100000;
+
+	public const float preStartRoundTimeSeconds = 5f;
+	public const int numPreStartRounds = 2;
 
 	public const float roundTimeSeconds = 1f;
 	public const int roundDataPoints = 20;
@@ -34,11 +38,16 @@ public class Model
 	#endregion
 
 	#region Dynamic Fields
-	public GamePhases gamePhase = GamePhases.Market;
+	public GamePhases gamePhase = GamePhases.PreStart;
 
 	private float roundElapsedTime = 0f;
-	private float timeBetweenDataPoints = roundTimeSeconds / roundDataPoints;
 	public int roundDataPointsAdded = 0;
+	public int preStartRoundsPassed = 0;
+
+	private float timeBetweenDataPoints =
+		roundTimeSeconds / roundDataPoints;
+	private float preStartTimeBetweenDataPoints =
+		preStartRoundTimeSeconds / roundDataPoints;
 
 	public Queue<StockEvent> eventQueue;
 	public List<Trader> traders = new List<Trader>();
@@ -64,14 +73,39 @@ public class Model
 	#region Methods
 	public void Tick()
 	{
-		if (gamePhase != GamePhases.Market)
+		switch (gamePhase)
 		{
-			return;
+		case GamePhases.PreStart:
+		{
+			PreStartMarketTick();
+			break;
 		}
 
+		case GamePhases.Market:
+		{
+			MarketTick();
+			break;
+		}
+
+		case GamePhases.Business:
+		{
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
+		}
+
+		return;
+	}
+
+	private void MarketTick()
+	{
 		roundElapsedTime += Time.deltaTime;
 		int neededDataPoints =
-			Mathf.FloorToInt(roundElapsedTime / timeBetweenDataPoints);
+			Mathf.FloorToInt(roundElapsedTime / preStartTimeBetweenDataPoints);
 
 		while (neededDataPoints > roundDataPointsAdded)
 		{
@@ -93,6 +127,43 @@ public class Model
 			roundElapsedTime -= roundTimeSeconds;
 			roundDataPointsAdded = 0;
 			gamePhase = GamePhases.Business;
+		}
+
+		return;
+	}
+
+	private void PreStartMarketTick()
+	{
+		roundElapsedTime += Time.deltaTime;
+		int neededDataPoints =
+			Mathf.FloorToInt(roundElapsedTime / timeBetweenDataPoints);
+
+		while (neededDataPoints > roundDataPointsAdded)
+		{
+			foreach (MarketForce mf in marketForces)
+			{
+				mf.Tick();
+			}
+
+			foreach (Stock s in stocks)
+			{
+				s.Tick();
+			}
+
+			++roundDataPointsAdded;
+		}
+
+		if (roundElapsedTime >= preStartRoundTimeSeconds)
+		{
+			roundElapsedTime -= preStartRoundTimeSeconds;
+			roundDataPointsAdded = 0;
+
+			++preStartRoundsPassed;
+		}
+
+		if (preStartRoundsPassed >= numPreStartRounds)
+		{
+			gamePhase = GamePhases.Market;
 		}
 
 		return;
