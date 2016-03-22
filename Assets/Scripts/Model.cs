@@ -102,16 +102,17 @@ public class Model
 		if (inName == null)
 		{
 			inName = string.Format("Player {0}", traders.Count + 1);
-	}
+		}
 
 		Trader newTrader = new Trader(inName, startingMoney);
 		foreach (Stock s in stocks)
-	{
+		{
 			newTrader.shares.Add(s, startingSharesPerCompany);
 			s.Buy(newTrader, startingSharesPerCompany);
 
 			s.AddTrader(newTrader);
 		}
+		traders.Add(newTrader);
 
 		return;
 	}
