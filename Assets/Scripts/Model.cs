@@ -15,8 +15,8 @@ public class Model
 	private const int startingMoney = 50000;
 	private const int startingSharesPerCompany = 100000;
 
-	public const float roundTimeSeconds = 1f;
-	public const int roundDataPoints = 20;
+	public const float roundTimeSeconds = 60f;
+	public const int roundDataPoints = 120;
 
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
