@@ -1,9 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
+public enum GamePhases
+{
+	Market,
+	Business
+}
 
 public class Model
 {
 	#region Tuning Fields
+	private const int defaultStartingMoney = 50000;
+
+	public const float roundTimeSeconds = 60f;
+	public const int roundDataPoints = 120;
+
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
 		{
@@ -20,6 +33,13 @@ public class Model
 	#endregion
 
 	#region Dynamic Fields
+	private GamePhases gamePhase = GamePhases.Market;
+
+	private float roundElapsedTime = 0f;
+	private float timeBetweenDataPoints =
+		roundDataPoints / roundTimeSeconds;
+	private int roundDataPointsAdded = 0;
+
 	public Queue<StockEvent> eventQueue;
 	public List<Trader> traders;
 	#endregion
@@ -44,26 +64,58 @@ public class Model
 	#region Methods
 	public void Tick()
 	{
-		foreach (MarketForce mf in marketForces)
+		if (gamePhase != GamePhases.Market)
 		{
-			mf.Tick();
+			return;
 		}
 
-		foreach (Stock s in stocks)
+		roundElapsedTime += Time.deltaTime;
+		int neededDataPoints =
+			Mathf.FloorToInt(roundElapsedTime / timeBetweenDataPoints);
+
+		while (neededDataPoints > roundDataPointsAdded)
 		{
-			s.Tick();
+			foreach (MarketForce mf in marketForces)
+			{
+				mf.Tick();
+			}
+
+			foreach (Stock s in stocks)
+			{
+				s.Tick();
+			}
+
+			++roundDataPointsAdded;
+		}
+
+		if (roundElapsedTime >= roundTimeSeconds)
+		{
+			roundElapsedTime -= roundTimeSeconds;
+			roundDataPointsAdded = 0;
+
+			foreach (Stock s in stocks)
+			{
+				s.AdvancePeriod();
+			}
 		}
 
 		return;
 	}
 
-	public void BeginNewPeriod()
+	public void AddTrader(string inName)
 	{
-		foreach (Stock s in stocks)
+		AddTrader(defaultStartingMoney, inName);
+		return;
+	}
+
+	public void AddTrader(int startMoney = defaultStartingMoney, string inName = null)
+	{
+		if (inName == null)
 		{
-			s.AdvancePeriod();
+			inName = string.Format("Player {0}", traders.Count + 1);
 		}
 
+		traders.Add(new Trader(inName, startMoney));
 		return;
 	}
 

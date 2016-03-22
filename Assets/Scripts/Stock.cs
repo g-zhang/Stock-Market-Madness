@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class Stock
 {
 	#region Tuning Fields
-	private readonly string name;
+	public readonly string name;
 	private int numAvailable;
 
 	// TODO: Wrap this into a "generator" class that can be plugged in.
@@ -46,6 +46,14 @@ public class Stock
 	#endregion
 
 	#region Properties
+	public int NumStocksAvailable
+	{
+		get
+		{
+			return numAvailable;
+		}
+	}
+
 	public float Price
 	{
 		get

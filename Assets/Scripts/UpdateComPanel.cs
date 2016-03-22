@@ -10,8 +10,8 @@ public class UpdateComPanel : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		for (CompanyName i = 0; i != CompanyName.size; i++) {
-			updateStockPrice (i, CompanyManager.S.GetStocks (i).Price);
-			updateStockAvail (i, CompanyManager.S.GetStocks (i).StocksAvailable);
+			updateStockPrice (i, Model.Instance.stocks[(int)i].Price);
+			updateStockAvail (i, Model.Instance.stocks[(int)i].NumStocksAvailable);
 		}
 	}
 

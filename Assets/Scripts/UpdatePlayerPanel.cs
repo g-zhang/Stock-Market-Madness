@@ -26,7 +26,7 @@ public class UpdatePlayerPanel : MonoBehaviour {
 		updateSelectedCom (GetComponent<Player> ().selectedCompany);
 
 		for (CompanyName i = 0; i != CompanyName.size; i++) {
-			updateShare (i, GetComponent<Player> ().CompanyShares [(int)i]);
+			updateShare (i, GetComponent<Player> ().getPlayerStockData(i));
 		}
 		updateMoney(GetComponent<Player>().currentMoney);
 	}

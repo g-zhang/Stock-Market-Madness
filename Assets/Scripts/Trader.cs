@@ -1,16 +1,22 @@
 ﻿using System.Collections.Generic;
 
-public class Trader {
-
-	public string name;
+public class Trader
+{
+	#region Fields
+	public readonly string name;
 	public float money;
 	public Dictionary<Stock, int> shares;
+	#endregion
 
-	public Trader(string n, float m) {
+	#region Constructor
+	public Trader(string inName, float startMoney)
+	{
+		name = inName;
+		money = startMoney;
+
 		shares = new Dictionary<Stock, int>();
-		name = n; money = m;
+
+		return;
 	}
-	public Trader() : this("", 0f) { }
-	public Trader(float m) : this("", m) { }
-	public Trader(string n) : this(n, 0f) { }
+	#endregion
 }

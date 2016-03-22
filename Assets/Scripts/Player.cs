@@ -2,18 +2,19 @@
 using System.Collections;
 using InControl;
 
+public enum CompanyName { A, B, C, size, none }
+
 public class Player : MonoBehaviour {
 
     public enum Phase { BuySell = 0, Business, size };
 
     public int playerNum;
     private PlayerControls controls;
+    private Trader playerData;
 
     [Header("Status")]
     public Phase currentGamePhase = Phase.BuySell;
     private Phase prevPhase;
-    public float currentMoney;
-    public int[] CompanyShares = new int[(int)CompanyName.size];
     public float currDelayTime = 0f;
     public float currHoldTime = 0f;
     public CompanyName selectedCompany = CompanyName.none;
@@ -26,12 +27,35 @@ public class Player : MonoBehaviour {
     public float holdActionRate = 4f; //rate of auto buying/selling
     int sharesPerAction = 1000; //number of shares bought per button press
 
+    //Properties
+    public float currentMoney
+    {
+        get
+        {
+            return playerData.money;
+        }
+    }
+
+    public int getPlayerStockData(CompanyName name)
+    {
+        if(name < CompanyName.size)
+        {
+            return playerData.shares[Model.Instance.stocks[(int)name]];
+        } else
+        {
+            return -1;
+        }
+    }
+
 
 	// Use this for initialization
 	void Start () {
         controls = new PlayerControls(playerNum);
         controls.profile = controlLayout;
         prevPhase = currentGamePhase;
+
+        //get player data on the market
+        playerData = Model.Instance.traders[playerNum];
 	}
 	
 	// Update is called once per frame
@@ -162,26 +186,11 @@ public class Player : MonoBehaviour {
 
     void BuyShares(CompanyName company)
     {
-        StockManager stocks = CompanyManager.S.GetStocks(company);
-        float moneyRequired = stocks.Price * sharesPerAction;
-        if (moneyRequired <= currentMoney && stocks.RecordBuy(sharesPerAction))
-        {
-            print("Bought " + company);
-            CompanyShares[(int)company] += sharesPerAction;
-            currentMoney -= moneyRequired;
-        }
+        Model.Instance.Buy(playerData, Model.Instance.stocks[(int)company], sharesPerAction);
     }
 
     void SellShares(CompanyName company)
     {
-        StockManager stocks = CompanyManager.S.GetStocks(company);
-        float moneyGained = stocks.Price * sharesPerAction;
-        if(CompanyShares[(int)company] >= sharesPerAction)
-        {
-            print("Sell " + company);
-            stocks.RecordSell(sharesPerAction);
-            CompanyShares[(int)company] -= sharesPerAction;
-            currentMoney += moneyGained;
-        }
+        Model.Instance.Sell(playerData, Model.Instance.stocks[(int)company], sharesPerAction);
     }
 }
