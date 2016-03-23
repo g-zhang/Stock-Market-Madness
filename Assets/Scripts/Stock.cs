@@ -12,6 +12,7 @@ public class Stock
 	private float diffWeights;
 	private float lerpWeights;
 	private float randStartAbsVal;
+	private float minStockPrice = 1f;
 	#endregion
 
 	#region Dynamic Fields
@@ -107,7 +108,9 @@ public class Stock
 			minVal += diffWeights * difference;
 			maxVal += diffWeights * difference;
 		}
+
 		minVal = Mathf.Max(minVal, 1 - Price);
+		maxVal = Mathf.Max(minVal, maxVal);
 
 		generalCurrNumSold =
 			Mathf.FloorToInt(Mathf.Lerp(0f, generalCurrNumSold, lerpWeights));
