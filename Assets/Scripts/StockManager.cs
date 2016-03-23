@@ -18,7 +18,8 @@ public class StockManager : MonoBehaviour
 
 	public int StocksAvailable
 	{
-		get { return stockGenerator.numStocksAvailable; }
+		//get { return stockGenerator.numStocksAvailable; }
+		get { return 1; }
 	}
 
 	public float Price
@@ -40,7 +41,7 @@ public class StockManager : MonoBehaviour
 
 	void Start()
 	{
-		graph.Price = stockGenerator.getNextStockValue();
+		//graph.Price = stockGenerator.getNextStockValue();
 		return;
 	}
 
@@ -52,8 +53,8 @@ public class StockManager : MonoBehaviour
 
 		while (neededDataPoints > roundDataPointsAdded)
 		{
-			float nextStockPrice = stockGenerator.getNextStockValue();
-			graph.Price = nextStockPrice;
+			//float nextStockPrice = stockGenerator.getNextStockValue();
+			//graph.Price = nextStockPrice;
 
 			++roundDataPointsAdded;
 		}
@@ -72,12 +73,13 @@ public class StockManager : MonoBehaviour
 
 	public bool RecordBuy(int numStocks)
 	{
-		return stockGenerator.RecordBuy(numStocks);
+		return true;
+		//return stockGenerator.RecordBuy(numStocks);
 	}
 
 	public void RecordSell(int numStocks)
 	{
-		stockGenerator.RecordSell(numStocks);
+		//stockGenerator.RecordSell(numStocks);
 		return;
 	}
 }

@@ -2,73 +2,67 @@
 
 public class TestStockGenerator : StockGenerator
 {
-	[Header("TestStockGenerator: Inspector Set Fields")]
-	public float prevValue = 25f;
+	private float diffWeights;
+	private float lerpWeights;
+	private float randStartAbsVal;
 
-	public float negMinDiffWeight = 0.0001f;
-	public float negMaxDiffWeight = 0.0001f;
-
-	public float posMinDiffWeight = 0.0001f;
-	public float posMaxDiffWeight = 0.0001f;
-
-	public float buyValLerpWeight = 0.9f;
-	public float sellValLerpWeight = 0.9f;
-
-	public float randStartMinValue = -1f;
-	public float randStartMaxValue = 1f;
-
-	[Header("TestStockGenerator: Dynamically Set Fields")]
-	public int currNumSold;
-	public int currNumBought;
-
-	void Awake()
+	public TestStockGenerator(float inDiffWeights,
+		float inLerpWeights, float inRandStartAbsVal)
 	{
-		currNumSold = 0;
-		currNumBought = 0;
+		diffWeights = inDiffWeights;
+		lerpWeights = inLerpWeights;
+		randStartAbsVal = inRandStartAbsVal;
+
+		return;
 	}
 
-	public override float getNextStockValue()
+	public override void getNextStockValue(BuySellData data,
+		out float minRandVal, out float maxRandVal)
 	{
-		float minVal = randStartMinValue;
-		float maxVal = randStartMaxValue;
+		int currNumSold = data.generalCurrNumSold + data.companyCurrNumSold;
+		foreach (int numSold in data.tradersCurrNumSold.Values)
+		{
+			currNumSold += numSold;
+		}
+
+		int currNumBought = data.generalCurrNumBought + data.companyCurrNumBought;
+		foreach (int numBought in data.tradersCurrNumBought.Values)
+		{
+			currNumBought += numBought;
+		}
+
+		minRandVal = -randStartAbsVal;
+		maxRandVal = randStartAbsVal;
 
 		int difference = currNumBought - currNumSold;
 		if (difference < 0)
 		{
-			minVal += negMinDiffWeight * difference;
-			maxVal += negMaxDiffWeight * difference;
+			minRandVal += diffWeights * difference;
+			maxRandVal += diffWeights * difference;
 		}
 		else if (difference > 0)
 		{
-			minVal += posMinDiffWeight * difference;
-			maxVal += posMaxDiffWeight * difference;
+			minRandVal += diffWeights * difference;
+			maxRandVal += diffWeights * difference;
 		}
-		currNumBought = Mathf.FloorToInt(Mathf.Lerp(0f, currNumBought, buyValLerpWeight));
-		currNumSold = Mathf.FloorToInt(Mathf.Lerp(0f, currNumSold, sellValLerpWeight));
 
-		minVal = Mathf.Max(minVal, 1 - prevValue);
+		data.generalCurrNumSold =
+			Mathf.FloorToInt(Mathf.Lerp(0f, data.generalCurrNumSold, lerpWeights));
+		data.companyCurrNumSold =
+			Mathf.FloorToInt(Mathf.Lerp(0f, data.companyCurrNumSold, lerpWeights));
 
-		prevValue = prevValue + Random.Range(minVal, maxVal);
-		return prevValue;
-	}
+		data.generalCurrNumBought =
+			Mathf.FloorToInt(Mathf.Lerp(0f, data.generalCurrNumBought, lerpWeights));
+		data.companyCurrNumBought =
+			Mathf.FloorToInt(Mathf.Lerp(0f, data.companyCurrNumBought, lerpWeights));
 
-	public override bool RecordBuy(int numStocks)
-	{
-		if (numStocks > numStocksAvailable)
+		foreach (Trader trader in Model.Instance.traders)
 		{
-			return false;
+			data.tradersCurrNumSold[trader] =
+				Mathf.FloorToInt(Mathf.Lerp(0f, data.tradersCurrNumSold[trader], lerpWeights));
+			data.tradersCurrNumBought[trader] =
+				Mathf.FloorToInt(Mathf.Lerp(0f, data.tradersCurrNumBought[trader], lerpWeights));
 		}
-
-		currNumBought += numStocks;
-		numStocksAvailable -= numStocks;
-
-		return true;
-	}
-
-	public override void RecordSell(int numStocks)
-	{
-		currNumSold += numStocks;
-		numStocksAvailable += numStocks;
 
 		return;
 	}

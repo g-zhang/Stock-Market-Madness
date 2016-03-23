@@ -25,9 +25,12 @@ public class Model
 	public readonly ReadOnlyCollection<Stock> stocks =
 		new ReadOnlyCollection<Stock>(new List<Stock>
 		{
-			new Stock("Company A", 1000000, 25f, 0.0001f, 0.9f, 1f),
-			new Stock("Company B", 1000000, 25f, 0.0001f, 0.9f, 1f),
-			new Stock("Company C", 1000000, 25f, 0.0001f, 0.9f, 1f)
+			new Stock("Company A", 1000000, 25f, 5f,
+				new TestStockGenerator(0.00005f, 0.9f, 1f)),
+			new Stock("Company B", 1000000, 25f, 5f,
+				new TestStockGenerator(0.00005f, 0.9f, 1f)),
+			new Stock("Company C", 1000000, 25f, 5f,
+				new TestStockGenerator(0.00005f, 0.9f, 1f))
 		});
 
 	public readonly ReadOnlyCollection<MarketForce> marketForces =
