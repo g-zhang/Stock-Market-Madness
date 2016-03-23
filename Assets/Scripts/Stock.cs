@@ -109,7 +109,7 @@ public class Stock
 			maxVal += diffWeights * difference;
 		}
 
-		minVal = Mathf.Max(minVal, 1 - Price);
+		minVal = Mathf.Max(minVal, minStockPrice - Price);
 		maxVal = Mathf.Max(minVal, maxVal);
 
 		generalCurrNumSold =
