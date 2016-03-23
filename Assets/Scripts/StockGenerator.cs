@@ -1,5 +1,5 @@
-﻿abstract public class StockGenerator
+﻿public interface StockGenerator
 {
-	abstract public void getNextStockValue(BuySellData data,
+	void getNextStockValue(BuySellData data,
 		out float minRandVal, out float maxRandVal);
 }

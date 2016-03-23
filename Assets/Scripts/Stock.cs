@@ -23,6 +23,7 @@ public class Stock
 	#endregion
 
 	#region Dynamic Fields
+	private float forcedDelta = 0f;
 	private BuySellData buySellData;
 	
 	public List<float> priceHistory;
@@ -87,7 +88,9 @@ public class Stock
 		minVal = Mathf.Max(minVal, minStockPrice - Price);
 		maxVal = Mathf.Max(minVal, maxVal);
 
-		Price += Random.Range(minVal, maxVal);
+		Price += Random.Range(minVal, maxVal) + forcedDelta;
+		forcedDelta = 0;
+
 		return;
 	}
 	#endregion
@@ -126,6 +129,12 @@ public class Stock
 		buySellData.tradersCurrNumSold.Add(trader, 0);
 		buySellData.tradersCurrNumBought.Add(trader, 0);
 
+		return;
+	}
+
+	public void AddForcedDelta(float inForcedDelta)
+	{
+		forcedDelta += inForcedDelta;
 		return;
 	}
 	#endregion
