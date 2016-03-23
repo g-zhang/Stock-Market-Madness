@@ -16,6 +16,8 @@ public class Model
 	private const int startingMoney = 50000;
 	private const int startingSharesPerCompany = 100000;
 
+	private const int sharesPerEventWeight = 10000;
+
 	public const float preStartRoundTimeSeconds = 5f;
 	public const int numPreStartRounds = 2;
 	
@@ -35,6 +37,8 @@ public class Model
 		{
 			// TODO
 		});
+
+	private Dictionary<Stock, List<float>> forcedDeltas = new Dictionary<Stock, List<float>>();
 	#endregion
 
 	#region Dynamic Fields
@@ -48,8 +52,7 @@ public class Model
 		roundTimeSeconds / roundDataPoints;
 	private float preStartTimeBetweenDataPoints =
 		preStartRoundTimeSeconds / roundDataPoints;
-
-	public Queue<StockEvent> eventQueue;
+	
 	public List<Trader> traders = new List<Trader>();
 	#endregion
 
@@ -67,7 +70,10 @@ public class Model
 			return S;
 		}
 	}
-	private Model() { }
+
+	private Model() {
+		foreach (Stock s in stocks) forcedDeltas.Add(s, new List<float>());
+	}
 	#endregion
 
 	#region Methods
@@ -217,15 +223,12 @@ public class Model
 		return true;
 	}
 
-	public void EnqueueEvent(StockEvent stockEvent)
-	{
-		eventQueue.Enqueue(stockEvent);
-	}
 
-	public void DequeueEvent()
+	public void MarketEvent(StockEvent stockEvent, Stock stock, int shares)
 	{
-		// Take the next event to do, and do it.
-		StockEvent nextEvent = eventQueue.Dequeue();
+		for (int i = 0; i < shares/sharesPerEventWeight; i++)
+			forcedDeltas[stock].Add(stockEvent.priceChangeDistribution.sample);
 	}
+	
 	#endregion
 }
