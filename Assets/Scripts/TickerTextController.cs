@@ -14,7 +14,7 @@ public class TickerTextController : MonoBehaviour {
 			TickerController.S.destroyOldNews ();
 		}
 		if (!isTemplate) {
-			transform.position += new Vector3 (-scrollSpeed, 0, 0);
+			transform.localPosition += new Vector3 (-scrollSpeed, 0, 0);
 		}
 	}
 
