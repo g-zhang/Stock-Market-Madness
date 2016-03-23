@@ -1,7 +1,4 @@
-﻿
-
-public class MarketForce {
-	public void Tick() {
-
-	}
+﻿public interface MarketForce
+{
+	void Tick();
 }
