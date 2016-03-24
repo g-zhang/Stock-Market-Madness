@@ -88,7 +88,10 @@ public class Stock
 		minVal = Mathf.Max(minVal, minStockPrice - Price);
 		maxVal = Mathf.Max(minVal, maxVal);
 
-		Price += Random.Range(minVal, maxVal) + forcedDelta;
+		float newPrice = Price + Random.Range(minVal, maxVal) + forcedDelta;
+		newPrice = Mathf.Max(newPrice, minStockPrice);
+
+		Price = newPrice;
 		forcedDelta = 0;
 
 		return;
