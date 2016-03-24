@@ -110,7 +110,7 @@ public class Player : MonoBehaviour {
         
     }
 
-    void ResetBusinessDecision()
+    public void ResetBusinessDecision()
     {
         selectedDecision = CompanyDecisions.none;
     }

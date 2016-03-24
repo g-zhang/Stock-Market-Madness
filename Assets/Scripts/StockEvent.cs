@@ -54,6 +54,7 @@ public class StockEvent {
 	public Distribution priceChangeDistribution = new Distribution();
 
 	public StockEvent(string name, params float[] bounds) {
+        eventName = name;
 		List<float> boundList = new List<float>(bounds);
 		float lastMin = 0;
 		for (int i=0; i < boundList.Count; i++)

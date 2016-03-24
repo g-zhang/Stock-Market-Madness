@@ -25,7 +25,7 @@ public class MoneyDiffController : MonoBehaviour {
 		if (!isTemplate) {
 			// How long it's been alive
 			float currLifetime = (Time.timeSinceLevelLoad - creationTime);
-			print (currLifetime);
+			//print (currLifetime);
 
 			// Make it float away and also wiggle lol
 			float xPos = Mathf.Sin(Time.timeSinceLevelLoad * sineAmplitude);

@@ -2,8 +2,8 @@
 using System;
 class EventLibrary {
 
-	// http://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp
-	private static Random rng = new Random();
+    // http://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp
+    private static Random rng = new Random();
 	public static void Shuffle<T>(List<T> list) {
 		int n = list.Count;
 		while (n > 1) {
@@ -20,23 +20,31 @@ class EventLibrary {
 		return stockEvents;
 	}
 
-	// CREATE AN EVENT:
-	// 1. Make a static private StockEvent, with string name, then alternating
-	//    min/max values for all ranges in the distribution for that event.
-	// 2. Add that StockEvent to the stockEvents list
+    static public List<StockEvent> getEventsCurrent()
+    {
+        return stockEvents;
+    }
 
-	static private List<StockEvent> stockEvents = new List<StockEvent> {
-		WILDCARD_CEO,
-		UNRELIABLY_DOWN_CEO,
-		UNRELIABLY_UP_CEO,
-		DOWNER_CEO,
-		UPPER_CEO,
-		STEADY_GAINS_PROJECT,
-		RISKY_PROJECT,
-		WASTE_MONEY
-	};
+    // CREATE AN EVENT:
+    // 1. Make a static private StockEvent, with string name, then alternating
+    //    min/max values for all ranges in the distribution for that event.
+    // 2. Add that StockEvent to the stockEvents list
+    static private List<StockEvent> stockEvents;
+    static EventLibrary()
+    {
+        stockEvents = new List<StockEvent> {
+            WILDCARD_CEO,
+            UNRELIABLY_DOWN_CEO,
+            UNRELIABLY_UP_CEO,
+            DOWNER_CEO,
+            UPPER_CEO,
+            STEADY_GAINS_PROJECT,
+            RISKY_PROJECT,
+            WASTE_MONEY
+        };
+    }
 
-	static private StockEvent WILDCARD_CEO =
+    static private StockEvent WILDCARD_CEO =
 		new StockEvent("Elect Wild-Card Charlie CEO", 5f, 6f, -5f, -6f);
 	static private StockEvent UNRELIABLY_DOWN_CEO =
 		new StockEvent("Elect Duncy Dee CEO", -1f, -6f, 4f, 5f);
@@ -48,7 +56,7 @@ class EventLibrary {
 		new StockEvent("Elect Earnest Mac CEO", 1f, 3f);
 
 	static private StockEvent STEADY_GAINS_PROJECT =
-		new StockEvent("Take the beaten path. Do what we know.", -.5f, 3f);
+		new StockEvent("Take the tried and true path.", -.5f, 3f);
 	static private StockEvent RISKY_PROJECT =
 		new StockEvent("Take on a risky new project.", -4f, -.1f, 5.5f, 6f);
 	static private StockEvent WASTE_MONEY =

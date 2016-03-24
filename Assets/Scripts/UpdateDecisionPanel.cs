@@ -6,6 +6,8 @@ public enum CompanyDecisions { X = 0, Y , A , B, size, none};
 
 public class UpdateDecisionPanel : MonoBehaviour {
 
+    static int NUM_EVENTS = 4;
+
     [Header("Player Objects")]
     public GameObject[] playersobj = new GameObject[4];
     private Player[] players = new Player[4];
@@ -52,12 +54,12 @@ public class UpdateDecisionPanel : MonoBehaviour {
         }
 	}
 
-    void UpdateDecisionChoices()
+    public void UpdateDecisionChoices()
     {
+        List<StockEvent> events = EventLibrary.getEventsShuffled();
         for (CompanyDecisions i = CompanyDecisions.X; i < CompanyDecisions.size; i++)
         {
-			List<StockEvent> events = EventLibrary.getEventsShuffled();
-			ChoiceTextBoxes[(int)i].text = events[(int)i].eventName;
+            ChoiceTextBoxes[(int)i].text = events[(int)i].eventName;
         }
     }
 }
