@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public enum CompanyDecisions { X = 0, Y , A , B, size, none};
@@ -52,12 +52,12 @@ public class UpdateDecisionPanel : MonoBehaviour {
         }
 	}
 
-    void UpdateDecisionChoices(StockEvent[] events)
+    void UpdateDecisionChoices()
     {
         for (CompanyDecisions i = CompanyDecisions.X; i < CompanyDecisions.size; i++)
         {
-            //StockEvent needs public members or properties for this
-            //ChoiceTextBoxes[(int)i].text = events[(int)i].eventName;
+			List<StockEvent> events = EventLibrary.getEventsShuffled();
+			ChoiceTextBoxes[(int)i].text = events[(int)i].eventName;
         }
     }
 }

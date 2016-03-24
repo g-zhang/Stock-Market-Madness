@@ -15,10 +15,9 @@ class EventLibrary {
 		}
 	}
 
-	static public List<StockEvent> getEventsShuffled(int n) {
-		List<StockEvent> result = new List<StockEvent>();
-		Shuffle(result);
-		return result;
+	static public List<StockEvent> getEventsShuffled() {
+		Shuffle(stockEvents);
+		return stockEvents;
 	}
 
 	// CREATE AN EVENT:
@@ -35,7 +34,7 @@ class EventLibrary {
 		STEADY_GAINS_PROJECT,
 		RISKY_PROJECT,
 		WASTE_MONEY
-	};
+	}
 
 	static private StockEvent WILDCARD_CEO =
 		new StockEvent("Elect Wild-Card Charlie CEO", 5f, 6f, -5f, -6f);
