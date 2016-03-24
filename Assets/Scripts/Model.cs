@@ -41,7 +41,8 @@ public class Model
 			// TODO
 		});
 
-	private Dictionary<Stock, List<float>> forcedDeltas = new Dictionary<Stock, List<float>>();
+	private Dictionary<Stock, List<KeyValuePair<int, float>>> forcedDeltas =
+		new Dictionary<Stock, List<KeyValuePair<int, float>>>();
 	#endregion
 
 	#region Dynamic Fields
@@ -74,8 +75,14 @@ public class Model
 		}
 	}
 
-	private Model() {
-		foreach (Stock s in stocks) forcedDeltas.Add(s, new List<float>());
+	private Model()
+	{
+		foreach (Stock s in stocks)
+		{
+			forcedDeltas.Add(s, new List<KeyValuePair<int, float>>());
+		}
+
+		return;
 	}
 	#endregion
 
@@ -125,6 +132,17 @@ public class Model
 
 			foreach (Stock s in stocks)
 			{
+				foreach (KeyValuePair<int, float> pair in forcedDeltas[s])
+				{
+					if (pair.Key != roundDataPointsAdded)
+					{
+						continue;
+					}
+
+					s.AddForcedDelta(pair.Value);
+				}
+				forcedDeltas[s].RemoveAll(p => p.Key == roundDataPointsAdded);
+
 				s.Tick();
 			}
 
@@ -229,8 +247,14 @@ public class Model
 
 	public void MarketEvent(StockEvent stockEvent, Stock stock, int shares)
 	{
-		for (int i = 0; i < shares/sharesPerEventWeight; i++)
-			forcedDeltas[stock].Add(stockEvent.priceChangeDistribution.sample);
+		for (int i = 0; i < (shares / sharesPerEventWeight); ++i)
+		{
+			forcedDeltas[stock].Add(new KeyValuePair<int, float>(
+				Random.Range(0, roundDataPoints),
+				stockEvent.priceChangeDistribution.sample));
+		}
+
+		return;
 	}
 	
 	#endregion
