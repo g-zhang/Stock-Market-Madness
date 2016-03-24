@@ -36,10 +36,11 @@ public class Distribution {
 			if (ranges.Count == 0) return 0.0f;
 			List<float> dist = new List<float>();
 			dist.Add(0f);
-			foreach (FloatRange range in ranges) dist.Add(dist[dist.Count - 1] + range.range);
+			foreach (FloatRange range in ranges)
+				dist.Add(dist[dist.Count - 1] + range.range);
 			double rand = r.NextDouble() * dist[dist.Count - 1];
 			int i = 1; while (rand > dist[i++]);
-			return ranges[i].random;
+			return ranges[i-1].random;
 		}
 	}
 
