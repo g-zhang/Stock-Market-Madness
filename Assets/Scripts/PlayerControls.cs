@@ -9,6 +9,15 @@ public class PlayerControls {
     private Profile curLayoutMode = Profile.Layout0;
     protected InputDevice inputDevice = null;
 
+
+    public InputDevice Input
+    {
+        get
+        {
+            return inputDevice;
+        }
+    }
+
     InputDevice getInputDevice()
     {
         return (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
