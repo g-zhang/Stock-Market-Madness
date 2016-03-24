@@ -5,6 +5,7 @@ public class RulerController : MonoBehaviour {
 
 	public GameObject[] pointers = new GameObject[(int)CompanyName.size];
 	public GameObject[] rulers = new GameObject[(int)CompanyName.size];
+	public TextMesh[] displays = new TextMesh[(int)CompanyName.size];
 
 	float maxPrice;
 	public float averagePrice;
@@ -37,19 +38,23 @@ public class RulerController : MonoBehaviour {
 				timeOfLastMaxPrice = Time.timeSinceLevelLoad;
 			}
 
-			updateStockPrice (i, price);
+			updatePointer (i, price);
+			updateDisplay (i, price);
 		}
 	}
 
-	void updateStockPrice(CompanyName whichCom, float newPrice) {
+	void updatePointer(CompanyName whichCom, float newPrice) {
 		float newPointYPos = (maxY - minY) * (newPrice / maxPrice) + minY;
 		Vector3 newPos = pointers [(int)whichCom].transform.localPosition;
 		newPos = new Vector3 (newPos.x, newPointYPos, newPos.z);
 
-		float u = pointers [(int)whichCom].transform.localPosition.y / newPos.y;
+		pointers [(int)whichCom].transform.localPosition = Vector3.Lerp(pointers [(int)whichCom].transform.localPosition, newPos, pointerSpeed);
+	}
 
-		// lerp = p0(1-u) + p1(u)
+	void updateDisplay(CompanyName whichCom, float newPrice) {
+		string finalValue = string.Format ("{0:C}", newPrice);
+		finalValue = finalValue.Insert (1, " ");
 
-		pointers [(int)whichCom].transform.localPosition = Vector3.Lerp(pointers [(int)whichCom].transform.localPosition, newPos, u + pointerSpeed);
+		displays [(int)whichCom].text = finalValue;
 	}
 }
