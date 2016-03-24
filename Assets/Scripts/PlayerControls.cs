@@ -23,6 +23,19 @@ public class PlayerControls {
         return (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
     }
 
+    // VJR(Virtual Joystick Region) Sample 
+    // http://forum.unity3d.com/threads/vjr-virtual-joystick-region-sample.116076/
+    public Vector2 GetRadius(Vector2 midPoint, Vector2 endPoint, float maxDistance)
+    {
+        Vector2 distance = endPoint;
+        if (Vector2.Distance(midPoint, endPoint) > maxDistance)
+        {
+            distance = endPoint - midPoint; distance.Normalize();
+            return (distance * maxDistance) + midPoint;
+        }
+        return distance;
+    }
+
     // Use this for initialization
     public PlayerControls(int pnum)
     {
@@ -60,7 +73,7 @@ public class PlayerControls {
                     return inputDevice.Action1;
 
                 case Profile.Layout1:
-                    return inputDevice.DPad.Down || inputDevice.LeftStick.Down;
+                    return inputDevice.DPad.Down;
 
                 default:
                     return false;
@@ -78,7 +91,7 @@ public class PlayerControls {
                     return inputDevice.Action2;
 
                 case Profile.Layout1:
-                    return inputDevice.DPad.Up || inputDevice.LeftStick.Up;
+                    return inputDevice.DPad.Up;
 
                 default:
                     return false;
@@ -96,7 +109,7 @@ public class PlayerControls {
                     return inputDevice.Action1.WasPressed;
 
                 case Profile.Layout1:
-                    return inputDevice.DPad.Down.WasPressed || inputDevice.LeftStick.Down.WasPressed;
+                    return inputDevice.DPad.Down.WasPressed;
 
                 default:
                     return false;
@@ -114,7 +127,7 @@ public class PlayerControls {
                     return inputDevice.Action2.WasPressed;
 
                 case Profile.Layout1:
-                    return inputDevice.DPad.Up.WasPressed || inputDevice.LeftStick.Up.WasPressed;
+                    return inputDevice.DPad.Up.WasPressed;
 
                 default:
                     return false;
@@ -129,7 +142,7 @@ public class PlayerControls {
             switch (curLayoutMode)
             {
                 case Profile.Layout0:
-                    return inputDevice.DPad.Left || inputDevice.LeftStick.Left;
+                    return inputDevice.DPad.Left;
 
                 case Profile.Layout1:
                     return inputDevice.Action3;
@@ -147,7 +160,7 @@ public class PlayerControls {
             switch (curLayoutMode)
             {
                 case Profile.Layout0:
-                    return inputDevice.DPad.Down || inputDevice.LeftStick.Down;
+                    return inputDevice.DPad.Down;
 
                 case Profile.Layout1:
                     return inputDevice.Action1;
@@ -165,7 +178,7 @@ public class PlayerControls {
             switch (curLayoutMode)
             {
                 case Profile.Layout0:
-                    return inputDevice.DPad.Right || inputDevice.LeftStick.Right;
+                    return inputDevice.DPad.Right;
 
                 case Profile.Layout1:
                     return inputDevice.Action2;

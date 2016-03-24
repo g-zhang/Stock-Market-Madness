@@ -66,15 +66,18 @@ public class Player : MonoBehaviour {
             print("ERROR Trader object doesn't exist!");
         }
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    void FixedUpdate()
+    {
         controls.profile = controlLayout;
         if (controls.Update())
         {
             ControlsUpdate();
         }
-
+    }
+	
+	// Update is called once per frame
+	void Update () {
         if(prevPhase != Model.Instance.gamePhase)
         {
             ResetBusinessDecision();
