@@ -21,7 +21,7 @@ public class Model
 	public const float preStartRoundTimeSeconds = 5f;
 	public const int numPreStartRounds = 2;
 	
-	public const float roundTimeSeconds = 60f;
+	public const float roundTimeSeconds = 5f;
 	public const int roundDataPoints = 120;
 
 	public readonly ReadOnlyCollection<Stock> stocks =

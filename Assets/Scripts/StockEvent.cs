@@ -39,7 +39,7 @@ public class Distribution {
 			foreach (FloatRange range in ranges)
 				dist.Add(dist[dist.Count - 1] + range.range);
 			double rand = r.NextDouble() * dist[dist.Count - 1];
-			int i = 1; while (rand > dist[i++]);
+			int i = 0; while (rand > dist[i]) i++;
 			return ranges[i-1].random;
 		}
 	}
