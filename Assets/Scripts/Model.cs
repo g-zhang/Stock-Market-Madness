@@ -38,29 +38,9 @@ public class Model
 	public readonly ReadOnlyCollection<MarketForce> marketForces =
 		new ReadOnlyCollection<MarketForce>(new List<MarketForce>
 		{
-			new TestMarketForce(1000, 0, 5),
-			new TestMarketForce(1000, 1, 5),
-			new TestMarketForce(1000, 2, 5),
-			new TestMarketForce(1000, 3, 5),
-			new TestMarketForce(1000, 4, 5),
-
-			new TestMarketForce(2000, 0, 10),
-			new TestMarketForce(2000, 2, 10),
-			new TestMarketForce(2000, 4, 10),
-			new TestMarketForce(2000, 6, 10),
-			new TestMarketForce(2000, 8, 10),
-
-			new TestMarketForce(5000, 1, 20),
-			new TestMarketForce(5000, 5, 20),
-			new TestMarketForce(5000, 9, 20),
-			new TestMarketForce(5000, 13, 20),
-			new TestMarketForce(5000, 17, 20),
-
-			new TestMarketForce(10000, 3, 20),
-			new TestMarketForce(10000, 7, 20),
-			new TestMarketForce(10000, 11, 20),
-			new TestMarketForce(10000, 15, 20),
-			new TestMarketForce(10000, 19, 20)
+			new TestMarketForce(5000, 0, 25),
+			new TestMarketForce(10000, 15, 50),
+			new TestMarketForce(20000, 55, 100)
 		});
 
 	private Dictionary<Stock, List<KeyValuePair<int, float>>> forcedDeltas =
