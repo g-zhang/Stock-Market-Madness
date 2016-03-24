@@ -83,7 +83,7 @@ public class Stock
 	{
 		float minVal;
 		float maxVal;
-		generator.getNextStockValue(buySellData, out minVal, out maxVal);
+		generator.getNextStockValue(ref buySellData, out minVal, out maxVal);
 
 		minVal = Mathf.Max(minVal, minStockPrice - Price);
 		maxVal = Mathf.Max(minVal, maxVal);
@@ -107,6 +107,7 @@ public class Stock
 		if (buySellData.tradersCurrNumBought.ContainsKey(trader))
 		{
 			buySellData.tradersCurrNumBought[trader] += numStocks;
+			buySellData.companyCurrNumSold += numStocks;
 		}
 
 		return true;
@@ -119,7 +120,24 @@ public class Stock
 		if (buySellData.tradersCurrNumSold.ContainsKey(trader))
 		{
 			buySellData.tradersCurrNumSold[trader] += numStocks;
+			buySellData.companyCurrNumBought += numStocks;
 		}
+
+		return;
+	}
+
+	public void AIBuy(int numStocks)
+	{
+		buySellData.generalCurrNumBought += numStocks;
+		buySellData.companyCurrNumSold += numStocks;
+
+		return;
+	}
+
+	public void AISell(int numStocks)
+	{
+		buySellData.generalCurrNumSold += numStocks;
+		buySellData.companyCurrNumBought += numStocks;
 
 		return;
 	}

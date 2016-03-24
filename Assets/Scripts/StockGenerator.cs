@@ -1,5 +1,5 @@
 ﻿public interface StockGenerator
 {
-	void getNextStockValue(BuySellData data,
+	void getNextStockValue(ref BuySellData data,
 		out float minRandVal, out float maxRandVal);
 }

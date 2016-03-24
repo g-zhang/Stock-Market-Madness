@@ -16,16 +16,16 @@ public class TestStockGenerator : StockGenerator
 		return;
 	}
 
-	public void getNextStockValue(BuySellData data,
+	public void getNextStockValue(ref BuySellData data,
 		out float minRandVal, out float maxRandVal)
 	{
-		int currNumSold = data.generalCurrNumSold + data.companyCurrNumSold;
+		int currNumSold = data.generalCurrNumSold;
 		foreach (int numSold in data.tradersCurrNumSold.Values)
 		{
 			currNumSold += numSold;
 		}
 
-		int currNumBought = data.generalCurrNumBought + data.companyCurrNumBought;
+		int currNumBought = data.generalCurrNumBought;
 		foreach (int numBought in data.tradersCurrNumBought.Values)
 		{
 			currNumBought += numBought;
