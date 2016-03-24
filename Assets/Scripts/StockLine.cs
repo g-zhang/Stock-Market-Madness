@@ -36,7 +36,6 @@ public class StockLine : MonoBehaviour {
 	public Vector3 PriceDataToLocalPoint(int idx, float price) {
 		float x = idx * graphDimensions.x / maxDataPointsOnGraph - graphDimensions.x / 2f;
 		float y = price * graphDimensions.y / maxPriceOnGraph - graphDimensions.y / 2f;
-		//print("price:"+price+" idx:"+idx+" x:"+x+" y:"+y);
 		return new Vector3(x, y, -0.1f);
 	}
 }

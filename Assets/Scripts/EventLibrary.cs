@@ -27,18 +27,31 @@ class EventLibrary {
 	// 2. Add that StockEvent to the stockEvents list
 
 	static private List<StockEvent> stockEvents = new List<StockEvent> {
-		RISKY_CEO,
-		STEADY_GAINS,
+		WILDCARD_CEO,
+		UNRELIABLY_DOWN_CEO,
+		UNRELIABLY_UP_CEO,
+		DOWNER_CEO,
+		UPPER_CEO,
+		STEADY_GAINS_PROJECT,
 		RISKY_PROJECT,
-		SLOW_DEATH
+		WASTE_MONEY
 	};
 
-	static private StockEvent RISKY_CEO =
-		new StockEvent("Elect Cocaine Charlie CEO", 5f, 6f, -5f, -6f);
-	static private StockEvent STEADY_GAINS =
+	static private StockEvent WILDCARD_CEO =
+		new StockEvent("Elect Wild-Card Charlie CEO", 5f, 6f, -5f, -6f);
+	static private StockEvent UNRELIABLY_DOWN_CEO =
+		new StockEvent("Elect Duncy Dee CEO", -1f, -6f, 4f, 5f);
+	static private StockEvent UNRELIABLY_UP_CEO =
+		new StockEvent("Elect Try-Hard Dennis CEO", 1f, 6f, -4f, -5f);
+	static private StockEvent DOWNER_CEO =
+		new StockEvent("Elect Frank the Trash-man CEO", -1f, -3f);
+	static private StockEvent UPPER_CEO =
+		new StockEvent("Elect Earnest Mac CEO", 1f, 3f);
+
+	static private StockEvent STEADY_GAINS_PROJECT =
 		new StockEvent("Take the beaten path. Do what we know.", -.5f, 3f);
 	static private StockEvent RISKY_PROJECT =
 		new StockEvent("Take on a risky new project.", -4f, -.1f, 5.5f, 6f);
-	static private StockEvent SLOW_DEATH =
+	static private StockEvent WASTE_MONEY =
 		new StockEvent("Waste money on company parties.", -4f, -2f);
 }
