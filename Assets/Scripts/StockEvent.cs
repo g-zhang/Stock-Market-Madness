@@ -15,8 +15,8 @@ public class FloatRange {
 
 	public FloatRange() : this(0f, 1f) { }
 
-	public float random { get { return range * (float) r.NextDouble() - min; } }
-	public float range { get { return max - min; } }
+	public float random { get { return range * (float) r.NextDouble() + min; } }
+	public float range { get { return Math.Abs(max - min); } }
 
 	private void orient() {
 		if (min < max) return;
