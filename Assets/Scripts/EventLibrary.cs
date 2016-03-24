@@ -27,9 +27,18 @@ class EventLibrary {
 	// 2. Add that StockEvent to the stockEvents list
 
 	static private List<StockEvent> stockEvents = new List<StockEvent> {
-		RISKY_CEO
+		RISKY_CEO,
+		STEADY_GAINS,
+		RISKY_PROJECT,
+		SLOW_DEATH
 	};
 
 	static private StockEvent RISKY_CEO =
 		new StockEvent("Elect Cocaine Charlie CEO", 5f, 6f, -5f, -6f);
+	static private StockEvent STEADY_GAINS =
+		new StockEvent("Take the beaten path. Do what we know.", -.5f, 3f);
+	static private StockEvent RISKY_PROJECT =
+		new StockEvent("Take on a risky new project.", -4f, -.1f, 5.5f, 6f);
+	static private StockEvent SLOW_DEATH =
+		new StockEvent("Waste money on company parties.", -4f, -2f);
 }
