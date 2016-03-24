@@ -51,10 +51,13 @@ public class Distribution {
 public class StockEvent {
 
 	public string eventName;
-	public string tickerText;
-	public Distribution priceChangeDistribution;
+	public Distribution priceChangeDistribution = new Distribution();
 
-	public StockEvent() {
-		priceChangeDistribution = new Distribution();
+	public StockEvent(string name, params float[] bounds) {
+		List<float> boundList = new List<float>(bounds);
+		float lastMin = 0;
+		for (int i=0; i < boundList.Count; i++)
+			if (i % 2 == 0) lastMin = boundList[i];
+			else priceChangeDistribution.AddRange(lastMin, boundList[i]);
 	}
 }
