@@ -16,7 +16,7 @@ public class TestStockGenerator : StockGenerator
 		return;
 	}
 
-	public override void getNextStockValue(BuySellData data,
+	public void getNextStockValue(BuySellData data,
 		out float minRandVal, out float maxRandVal)
 	{
 		int currNumSold = data.generalCurrNumSold + data.companyCurrNumSold;
