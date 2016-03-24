@@ -34,7 +34,7 @@ class EventLibrary {
 		STEADY_GAINS_PROJECT,
 		RISKY_PROJECT,
 		WASTE_MONEY
-	}
+	};
 
 	static private StockEvent WILDCARD_CEO =
 		new StockEvent("Elect Wild-Card Charlie CEO", 5f, 6f, -5f, -6f);
