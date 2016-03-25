@@ -23,19 +23,6 @@ public class PlayerControls {
         return (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
     }
 
-    // VJR(Virtual Joystick Region) Sample 
-    // http://forum.unity3d.com/threads/vjr-virtual-joystick-region-sample.116076/
-    public Vector2 GetRadius(Vector2 midPoint, Vector2 endPoint, float maxDistance)
-    {
-        Vector2 distance = endPoint;
-        if (Vector2.Distance(midPoint, endPoint) > maxDistance)
-        {
-            distance = endPoint - midPoint; distance.Normalize();
-            return (distance * maxDistance) + midPoint;
-        }
-        return distance;
-    }
-
     // Use this for initialization
     public PlayerControls(int pnum)
     {

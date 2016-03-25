@@ -29,7 +29,7 @@ public class PlayerCharacter : MonoBehaviour {
     void MovementControls()
     {
         Vector3 vel = Vector3.zero;
-        Vector2 dir = controls.GetRadius(Vector2.zero, controls.Input.LeftStick.Vector, 1f) * movementSpeed;
+        Vector2 dir = Vector2.ClampMagnitude(controls.Input.LeftStick.Vector, 1f) * movementSpeed;
 
         vel = new Vector3(dir.x, 0f, dir.y);
         body.velocity = Vector3.Lerp(body.velocity, vel, lerpSpeed);
